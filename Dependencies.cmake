@@ -22,4 +22,8 @@ find_package(hello-imgui CONFIG REQUIRED)
 
 if (EMSCRIPTEN)
 else()
+find_package(libwebsockets CONFIG REQUIRED)
+find_package(libuv CONFIG REQUIRED)
+find_package(Protobuf CONFIG REQUIRED)
+find_package(gRPC CONFIG REQUIRED)
 endif()
