@@ -38,6 +38,7 @@ include(cmake/fetch_content.cmake)
 
 project(bofimgui VERSION 1.0.0.0)
 include(cmake/compile.cmake)
+include(cmake/imgui.cmake)
 include(Dependencies.cmake)
 
 option(${PROJECT_NAME_UPPER_UNDERSCORE}_BUILD_TESTS       "Build units tests of ${PROJECT_NAME_LOWER} project"                                  ON)
