@@ -4,14 +4,14 @@
   "description": "The OnBings DearImGui c++ wrapper library",
   "dependencies": [
     {
+      "name": "bofstd"
+    },
+    {
       "name": "hello-imgui",
       "features": [
         "opengl3-binding",
         "sdl2-binding"
       ]
-    },
-    {
-      "name": "bofstd"
-    }
+    }	
   ]
 }
