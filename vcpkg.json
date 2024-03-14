@@ -3,7 +3,13 @@
   "version": "1.0.0.0",
   "description": "The OnBings DearImGui c++ wrapper library",
   "dependencies": [
-
+    {
+      "name": "hello-imgui",
+      "features": [
+        "opengl3-binding",
+        "sdl2-binding"
+      ]
+    },
     {
       "name": "bofstd"
     }

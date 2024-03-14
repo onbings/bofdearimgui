@@ -86,7 +86,7 @@ target_link_libraries(${PROJECT_NAME_LOWER_MINUS}
   PRIVATE
     ONBINGS::bofstd
 	# Note the subtle difference between the package name and the target name: hello-imgui vs hello_imgui!
-    hello-imgui::hello_imgui
+    #hello-imgui::hello_imgui
     # this mode will ignore all of hello_imgui cmake tooling, and will not deploy the assets
 )
 
