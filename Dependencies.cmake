@@ -18,12 +18,8 @@ endmacro()
 
 # == REQUIRED DEPENDENCIES ==
 find_package(bofstd CONFIG REQUIRED)
-find_package(hello-imgui CONFIG REQUIRED)
+#find_package(hello-imgui CONFIG REQUIRED)
 
 if (EMSCRIPTEN)
 else()
-find_package(libwebsockets CONFIG REQUIRED)
-find_package(libuv CONFIG REQUIRED)
-find_package(Protobuf CONFIG REQUIRED)
-find_package(gRPC CONFIG REQUIRED)
 endif()
