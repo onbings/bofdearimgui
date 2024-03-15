@@ -15,6 +15,7 @@
  */
 #include "gtestrunner.h"
 #include <bofimgui/bof_imgui.h>
+#include "hello_imgui/hello_imgui.h"
 
 class ut_imgui : public ::testing::Test
 {
@@ -30,7 +31,17 @@ protected:
   }
 };
 
-TEST_F(ut_imgui, Test)
+void RefreshGui()
+{ 
+  ImGui::Text("Hello, world!"); 
+  ImGui::ShowDemoWindow(); 
+}
+
+TEST_F(ut_imgui, ShowImgui)
 {
-  EXPECT_TRUE(false);
+
+  HelloImGui::RunnerParams RunnerParam_X;
+  RunnerParam_X.callbacks.ShowGui = RefreshGui;
+  HelloImGui::Run(RunnerParam_X);
+  //HelloImGui::Run([&]() { ImGui::Text("Hello, world!"); ImGui::ShowDemoWindow(); });
 }
