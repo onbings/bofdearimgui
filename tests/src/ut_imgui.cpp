@@ -14,7 +14,7 @@
  * V 1.00  Feb 19 2024  BHA : Initial release
  */
 #include "gtestrunner.h"
-#include <bofimgui/bof_imgui.h>
+#include <bofdearimgui/bof_dearimgui.h>
 #include "hello_imgui/hello_imgui.h"
 
 class ut_imgui : public ::testing::Test

@@ -38,7 +38,7 @@ if WIN32 def, we use Glfw: HELLOIMGUI_USE_GLFW
 //#include <SDL_events.h>
 #else
 #endif
-#include "bof_imgui.h"
+#include "bof_dearimgui.h"
 
 BEGIN_BOF_NAMESPACE()
 

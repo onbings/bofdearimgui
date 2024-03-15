@@ -6,8 +6,8 @@
 // [SECTION] render helpers
 // [SECTION] API implementation
 #define IMGUI_DEFINE_MATH_OPERATORS
-#include "bofimgui/bof_imgui_imnodes.h"
-#include "bofimgui/bof_imgui_imnodes_internal.h"
+#include "bofdearimgui/bof_dearimgui_imnodes.h"
+#include "bofdearimgui/bof_dearimgui_imnodes_internal.h"
 
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui_internal.h>

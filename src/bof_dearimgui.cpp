@@ -12,8 +12,8 @@
  *
  * V 1.00  Dec 24 2023  Bernard HARMEL: onbings@gmail.com : Initial release
  */
-#include "bofimgui/bof_imgui.h"
-#include "bofimgui/bof_imgui_internal.h"
+#include "bofdearimgui/bof_dearimgui.h"
+#include "bofdearimgui/bof_dearimgui_internal.h"
 #include <bofstd/bofstring.h>
 
 #if defined(_WIN32)

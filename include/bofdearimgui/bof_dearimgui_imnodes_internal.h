@@ -1,6 +1,6 @@
 #pragma once
 
-#include "bof_imgui_imnodes.h"
+#include "bof_dearimgui_imnodes.h"
 
 #include <imgui.h>
 #define IMGUI_DEFINE_MATH_OPERATORS
