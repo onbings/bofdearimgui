@@ -36,11 +36,6 @@ void RefreshGui()
   ImGui::Text("Hello, world!");
   ImGui::ShowDemoWindow();
 }
-void RefreshGui()
-{
-  ImGui::Text("Hello, world!");
-  ImGui::ShowDemoWindow();
-}
 
 TEST_F(ut_imgui, ShowImgui)
 {
