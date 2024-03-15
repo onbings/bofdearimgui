@@ -68,7 +68,7 @@ target_compile_definitions(${PROJECT_NAME_LOWER_MINUS}
   PRIVATE
     -D${PROJECT_NAME_LOWER}_EXPORTS=1	#in lower case to define the SYMBOL BOFIMGUI_EXPORT (upper case) in bofimgui_export.h
 )
-include(cmake/imgui.cmake)
+include(cmake/dearimgui.cmake)
 
 if (EMSCRIPTEN)
   include(cmake/emscripten.cmake)
