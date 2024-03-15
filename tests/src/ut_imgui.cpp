@@ -31,10 +31,18 @@ protected:
   }
 };
 
+<<<<<<< HEAD
 void RefreshGui()
 { 
   ImGui::Text("Hello, world!"); 
   ImGui::ShowDemoWindow(); 
+=======
+
+void RefreshGui()
+{
+  ImGui::Text("Hello, world!");
+  ImGui::ShowDemoWindow();
+>>>>>>> 4ea32e640f6347a1b2eae884c2d350e0733fdc2f
 }
 
 TEST_F(ut_imgui, ShowImgui)
