@@ -30,7 +30,18 @@ protected:
   }
 };
 
-TEST_F(ut_imgui, Test)
+
+void RefreshGui()
 {
-  EXPECT_TRUE(false);
+  ImGui::Text("Hello, world!");
+  ImGui::ShowDemoWindow();
+}
+
+TEST_F(ut_imgui, ShowImgui)
+{
+
+  HelloImGui::RunnerParams RunnerParam_X;
+  RunnerParam_X.callbacks.ShowGui = RefreshGui;
+  HelloImGui::Run(RunnerParam_X);
+  //HelloImGui::Run([&]() { ImGui::Text("Hello, world!"); ImGui::ShowDemoWindow(); });
 }

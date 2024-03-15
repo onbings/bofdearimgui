@@ -10,7 +10,7 @@
 # 
 
 #Emscripten build
-#cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_INSTALL_PREFIX=C:/bld/evs-xts-web/binaries -DVCPKG_CHAINLOAD_TOOLCHAIN_FILE=C:/pro/emsdk/upstream/emscripten/cmake/Modules/Platform/emscripten.cmake -DCMAKE_TOOLCHAIN_FILE=C:/pro/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=wasm32-emscripten -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Debug -SC:/pro/github/bofimgui -BC:/bld/bofimgui-web -DCMAKE_CROSSCOMPILING_EMULATOR=C:/pro/emsdk/node/16.20.0_64bit/bin/node.exe -G Ninja
+#cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_INSTALL_PREFIX=C:/bld/evs-xts-web/binaries -DVCPKG_CHAINLOAD_TOOLCHAIN_FILE=C:/pro/emsdk/upstream/emscripten/cmake/Modules/Platform/emscripten.cmake -DCMAKE_TOOLCHAIN_FILE=C:/pro/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=wasm32-emscripten -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Debug -SC:/pro/evs-xts/bofimgui -BC:/bld/bofimgui-web -DCMAKE_CROSSCOMPILING_EMULATOR=C:/pro/emsdk/node/16.20.0_64bit/bin/node.exe -G Ninja
 #cd C:\pro\evs-xts\bofimgui\vcprj
 #vcprj.bat Web
 #Launch VsCode
@@ -18,10 +18,10 @@
 #Select VcRun::WebNode::ut_bofimgui in debug icon
 
 #Windows build
-#cmake -DCMAKE_INSTALL_PREFIX=C:/bld/evs-xts-win/binaries -DCMAKE_TOOLCHAIN_FILE=C:/pro/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-windows-static -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Debug -SC:/pro/github/bofimgui -BC:/bld/bofimgui-win
+#cmake -DCMAKE_INSTALL_PREFIX=C:/bld/evs-xts-win/binaries -DCMAKE_TOOLCHAIN_FILE=C:/pro/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-windows-static -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Debug -SC:/pro/evs-xts/bofimgui -BC:/bld/bofimgui-win
 
 #Linux build
-#cmake -DCMAKE_INSTALL_PREFIX=/home/bha/bld/evs-xts-lin/binaries -DCMAKE_TOOLCHAIN_FILE=/home/bha/pro/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-linux -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Debug -S/home/bha/pro/github/bofimgui -B/home/bha/bld/bofimgui-lin
+#cmake -DCMAKE_INSTALL_PREFIX=/home/bha/bld/evs-xts-lin/binaries -DCMAKE_TOOLCHAIN_FILE=/home/bha/pro/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-linux -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Debug -S/home/bha/pro/evs-xts/bofimgui -B/home/bha/bld/bofimgui-lin
 
 #cmake --install . --config Debug
 
