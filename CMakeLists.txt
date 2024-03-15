@@ -51,15 +51,15 @@ set(DATA_FILES
 
 # == BUILD ==
 add_library(${PROJECT_NAME_LOWER_MINUS}
-   ./src/bof_imgui.cpp
-   ./include/bofimgui/bof_imgui.h
-   ./src/bof_imgui_internal.cpp
-   ./include/bofimgui/bof_imgui_internal.h
+   ./src/bof_dearimgui.cpp
+   ./include/bofdearimgui/bof_dearimgui.h
+   ./src/bof_dearimgui_internal.cpp
+   ./include/bofdearimgui/bof_dearimgui_internal.h
 
-   ./include/bofimgui/bof_imgui_imnodes.h 
-   ./include/bofimgui/bof_imgui_imnodes_internal.h 
+   ./include/bofdearimgui/bof_dearimgui_imnodes.h 
+   ./include/bofdearimgui/bof_dearimgui_imnodes_internal.h 
 
-   ./src/bof_imgui_imnodes.cpp
+   ./src/bof_dearimgui_imnodes.cpp
 )
 # Alias with the namespaced version (consistency)
 add_library(ONBINGS::${PROJECT_NAME_LOWER_MINUS} ALIAS ${PROJECT_NAME_LOWER_MINUS})
