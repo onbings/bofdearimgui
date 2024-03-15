@@ -448,7 +448,7 @@ void Bof_ImGui::V_SetupImGuiConfig()
 {
   DBG_LOG("V_SetupImGuiConfig\n", 0);
 #if defined(_WIN32)
-  SetProcessDpiAwareness(PROCESS_PER_MONITOR_DPI_AWARE);
+  //BHA SetProcessDpiAwareness(PROCESS_PER_MONITOR_DPI_AWARE);
 #endif
   HelloImGui::ImGuiDefaultSettings::SetupDefaultImGuiConfig(); // io.ConfigFlags |= ImGuiConfigFlags_DockingEnable; ...
 }
