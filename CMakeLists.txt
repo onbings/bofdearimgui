@@ -38,7 +38,6 @@ include(cmake/fetch_content.cmake)
 
 project(bofimgui VERSION 1.0.0.0)
 include(cmake/compile.cmake)
-include(cmake/imgui.cmake)
 include(Dependencies.cmake)
 
 option(${PROJECT_NAME_UPPER_UNDERSCORE}_BUILD_TESTS       "Build units tests of ${PROJECT_NAME_LOWER} project"                                  ON)
@@ -69,6 +68,8 @@ target_compile_definitions(${PROJECT_NAME_LOWER_MINUS}
   PRIVATE
     -D${PROJECT_NAME_LOWER}_EXPORTS=1	#in lower case to define the SYMBOL BOFIMGUI_EXPORT (upper case) in bofimgui_export.h
 )
+include(cmake/imgui.cmake)
+
 if (EMSCRIPTEN)
   include(cmake/emscripten.cmake)
 else()
@@ -86,9 +87,6 @@ target_include_directories(${PROJECT_NAME_LOWER_MINUS}
 target_link_libraries(${PROJECT_NAME_LOWER_MINUS}
   PRIVATE
     ONBINGS::bofstd
-	# Note the subtle difference between the package name and the target name: hello-imgui vs hello_imgui!
-    #hello-imgui::hello_imgui
-    # this mode will ignore all of hello_imgui cmake tooling, and will not deploy the assets
 )
 
 if(${PROJECT_NAME_UPPER_UNDERSCORE}_BUILD_TESTS)
