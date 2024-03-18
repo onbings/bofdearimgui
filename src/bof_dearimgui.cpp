@@ -490,7 +490,7 @@ void Bof_ImGui::V_ShowStatus()
 }
 void Bof_ImGui::V_ShowGui()
 {
-  DBG_LOG("V_ShowGui\n", 0);
+  //DBG_LOG("V_ShowGui\n", 0);
   // HandleComputerKeyboard();
 
   // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
@@ -508,11 +508,11 @@ void Bof_ImGui::V_ShowGui()
 }
 void Bof_ImGui::V_BeforeImGuiRender()
 {
-  DBG_LOG("V_BeforeImGuiRender\n", 0);
+  //DBG_LOG("V_BeforeImGuiRender\n", 0);
 }
 void Bof_ImGui::V_AfterSwap()
 {
-  DBG_LOG("V_AfterSwap\n", 0);
+ // DBG_LOG("V_AfterSwap\n", 0);
 }
 bool Bof_ImGui::V_AnyBackendEventCallback(void *_pEvent)
 {
