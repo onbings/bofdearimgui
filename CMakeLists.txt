@@ -64,6 +64,8 @@ add_library(${PROJECT_NAME_LOWER_MINUS}
 # Alias with the namespaced version (consistency)
 add_library(ONBINGS::${PROJECT_NAME_LOWER_MINUS} ALIAS ${PROJECT_NAME_LOWER_MINUS})
 
+include(cmake/dearimgui.cmake)
+
 target_compile_definitions(${PROJECT_NAME_LOWER_MINUS}
   PRIVATE
     -D${PROJECT_NAME_LOWER}_EXPORTS=1	#in lower case to define the SYMBOL BOFIMGUI_EXPORT (upper case) in bofimgui_export.h
