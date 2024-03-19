@@ -769,12 +769,12 @@ bool Bof_ImGui::V_AnyBackendEventCallback(void *_pEvent)
   }
   else
   {
-    DBG_LOG("AnyBackendEventCallback with nullptr\n", 0);
+    //DBG_LOG("AnyBackendEventCallback with nullptr\n", 0);
   }
 #endif
 #else
   void *pEvent_X = (void *)_pEvent;
-  DBG_LOG("AnyBackendEventCallback %p\n", pEvent_X);
+  //DBG_LOG("AnyBackendEventCallback %p\n", pEvent_X);
 #endif
   return Rts_B;
 }
