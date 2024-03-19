@@ -280,7 +280,6 @@ public:
   std::vector<BOF_IMGUI_FONT> GetFontList();
   ImFont *GetFont(uint32_t _FontIndex_U32);
   ImFont *LoadFont(const char *_pFontFileTtf_c, uint32_t _FontSizeInPixel_U32);
-  BOF::BOF_SIZE<uint32_t> GetTextSize(const char *_pText_c);
   static bool S_HexaColor(const std::string &_rHexaColor_S, uint8_t(&_rColor_U8)[4]); //#RRGGBB or #RRGGBBAA
 
 protected:

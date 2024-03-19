@@ -361,18 +361,7 @@ ImFont *Bof_ImGui::LoadFont(const char *_pFontFileTtf_c, uint32_t _FontSizeInPix
   }
   return pRts;
 }
-BOF::BOF_SIZE<uint32_t> Bof_ImGui::GetTextSize(const char *_pText_c)
-{
-  BOF::BOF_SIZE<uint32_t> Rts_X;
 
-  if (mLastError_E == BOF_ERR_NO_ERROR)
-  {
-    ImVec2 TextSize_X = ImGui::CalcTextSize(_pText_c);
-    Rts_X.Width = (uint32_t)TextSize_X.x;
-    Rts_X.Height = (uint32_t)TextSize_X.y;
-  }
-  return Rts_X;
-}
 bool Bof_ImGui::S_HexaColor(const std::string &_rHexaColor_S, uint8_t (&_rColor_U8)[4])
 {
   bool Rts_B = false;
