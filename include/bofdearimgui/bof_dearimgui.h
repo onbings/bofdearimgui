@@ -54,8 +54,14 @@ using Logger = std::function<void(const char *)>;
 struct BOF_IMGUI_PARAM
 {
   std::string WindowTitle_S;  //Used also as user setting save and load op id
+  std::string MenuTitle_S; 
   BOF::BOF_SIZE<uint32_t> Size_X;
   std::string BackgroudHexaColor_S;  //if not set use V_CustomBackground callback
+  uint32_t MonitorIndex_U32;
+  bool FullScreen_B; //Invalidate WindowTitle_S, Size_X, CenterWindow_B and Pos_X
+  bool CenterWindow_B;
+  BOF::BOF_POINT_2D<int32_t> Pos_X;
+
   bool ShowDemoWindow_B;
   bool ShowMenuBar_B;
   bool ShowStatusBar_B;
@@ -68,8 +74,13 @@ struct BOF_IMGUI_PARAM
   void Reset()
   {
     WindowTitle_S = "";
+    MenuTitle_S = "";
     Size_X.Reset();
     BackgroudHexaColor_S = "";
+    MonitorIndex_U32 = 0;
+    FullScreen_B = false;
+    CenterWindow_B = false;
+    Pos_X.Reset();
     ShowDemoWindow_B = false;
     ShowMenuBar_B = false;
     ShowStatusBar_B = false;
@@ -266,7 +277,51 @@ struct Bof_ImGui_ImTextCustomization
     return Rts_X;
   }
 };
+enum BOF_IMGUI_DOCKING_WINDOW :uint32_t
+{
+  BOF_IMGUI_DOCKING_WINDOW_LEFT = 0,
+  BOF_IMGUI_DOCKING_WINDOW_RIGHT,
+  BOF_IMGUI_DOCKING_WINDOW_UP,
+  BOF_IMGUI_DOCKING_WINDOW_DOWN,
+  BOF_IMGUI_DOCKING_WINDOW_MAX
+};
+struct BOF_IMGUI_DOCKING_WINDOW_ENTRY
+{
+  std::string Name_S;
+  float Ratio_f;
 
+  ImGuiID Id;   //internal, don't touch
+  BOF_IMGUI_DOCKING_WINDOW_ENTRY()
+  {
+    Reset();
+  }
+  void Reset()
+  {
+    Name_S = "";
+    Ratio_f = 0.0F;
+    Id = 0;
+  }
+};
+struct BOF_IMGUI_DOCKING_WINDOW_PARAM
+{
+  std::array<BOF_IMGUI_DOCKING_WINDOW_ENTRY, BOF_IMGUI_DOCKING_WINDOW_MAX> ImguiDockingWindowCollection;
+
+  bool InitDone_B;//internal, don't touch
+  ImGuiDockNodeFlags DockspaceFlag;//internal, don't touch
+  ImGuiID DockSpaceId;//internal, don't touch
+
+  BOF_IMGUI_DOCKING_WINDOW_PARAM()
+  {
+    Reset();
+  }
+
+  void Reset()
+  {
+    InitDone_B = false;
+    DockspaceFlag = 0;
+    DockSpaceId = 0;
+  }
+};
 class Bof_ImGui
 {
 public:
@@ -281,6 +336,7 @@ public:
   ImFont *GetFont(uint32_t _FontIndex_U32);
   ImFont *LoadFont(const char *_pFontFileTtf_c, uint32_t _FontSizeInPixel_U32);
   static bool S_HexaColor(const std::string &_rHexaColor_S, uint8_t(&_rColor_U8)[4]); //#RRGGBB or #RRGGBBAA
+  BOFERR PrepareDockedWindow(BOF_IMGUI_DOCKING_WINDOW_PARAM &_rDockingWindowParam_X);
 
 protected:
   virtual BOFERR V_ReadSettings() = 0;
@@ -321,7 +377,8 @@ private:
   ImVec4 mClearColor_X;
   float mClearColor_f = 0.0f;
   uint32_t mCounter_U32 = 0;
-  
+
+
   BOFERR ShowDemoSelectorWindow();
   BOFERR ShowDemoAnotherWindow();
   BOFERR ShowDemoSpecialTextWindow();

@@ -110,6 +110,77 @@ BOFERR Bof_ImGui::DisplayText(BOF::BOF_POINT_2D<int32_t> *_pCursorPos_X, const c
   }
   return Rts_E;
 }
+//https://github.com/ocornut/imgui/issues/4430
+
+BOFERR Bof_ImGui::PrepareDockedWindow(BOF_IMGUI_DOCKING_WINDOW_PARAM &_rDockingWindowParam_X)
+{
+  BOFERR Rts_E = mLastError_E;
+  Bof_ImGui_ImTextCustomization TextCustomization_X;
+  ImGuiWindowFlags WindowFlag;
+  ImGuiViewport *pViewport_X;
+  uint32_t i_U32;
+
+  if (Rts_E == BOF_ERR_NO_ERROR)
+  {
+    _rDockingWindowParam_X.DockspaceFlag = ImGuiDockNodeFlags_PassthruCentralNode;
+    WindowFlag = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
+    pViewport_X = ImGui::GetMainViewport();
+    ImGui::SetNextWindowPos(pViewport_X->Pos);
+    ImGui::SetNextWindowSize(pViewport_X->Size);
+    ImGui::SetNextWindowViewport(pViewport_X->ID);
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+    WindowFlag |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+    WindowFlag |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+    if (_rDockingWindowParam_X.DockspaceFlag & ImGuiDockNodeFlags_PassthruCentralNode)
+    {
+      WindowFlag |= ImGuiWindowFlags_NoBackground;
+    }
+
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+    ImGui::Begin("DockSpace", nullptr, WindowFlag);
+    ImGui::PopStyleVar();
+    ImGui::PopStyleVar(2);
+
+    _rDockingWindowParam_X.DockSpaceId = ImGui::GetID("MyDockSpace");
+    //ImGuiID DockSpaceId = ImGui::GetMainViewport()->ID;
+    ImGui::DockSpace(_rDockingWindowParam_X.DockSpaceId, ImVec2(0.0f, 0.0f), _rDockingWindowParam_X.DockspaceFlag);
+    if (!_rDockingWindowParam_X.InitDone_B)
+    {
+      _rDockingWindowParam_X.InitDone_B = true;
+      ImGui::DockBuilderRemoveNode(_rDockingWindowParam_X.DockSpaceId);
+      ImGui::DockBuilderAddNode(_rDockingWindowParam_X.DockSpaceId, _rDockingWindowParam_X.DockspaceFlag | ImGuiDockNodeFlags_DockSpace);
+      ImGui::DockBuilderSetNodeSize(_rDockingWindowParam_X.DockSpaceId, pViewport_X->Size);
+
+      for (i_U32 = 0; i_U32 < BOF_IMGUI_DOCKING_WINDOW_MAX; i_U32++)
+      {
+        if (_rDockingWindowParam_X.ImguiDockingWindowCollection[i_U32].Name_S != "")
+        {
+          switch (i_U32)
+          {
+            default:
+            case BOF_IMGUI_DOCKING_WINDOW_LEFT:
+              _rDockingWindowParam_X.ImguiDockingWindowCollection[i_U32].Id = ImGui::DockBuilderSplitNode(_rDockingWindowParam_X.DockSpaceId, ImGuiDir_Left, _rDockingWindowParam_X.ImguiDockingWindowCollection[i_U32].Ratio_f, nullptr, &_rDockingWindowParam_X.DockSpaceId);
+              break;
+            case BOF_IMGUI_DOCKING_WINDOW_RIGHT:
+              _rDockingWindowParam_X.ImguiDockingWindowCollection[i_U32].Id = ImGui::DockBuilderSplitNode(_rDockingWindowParam_X.DockSpaceId, ImGuiDir_Right, _rDockingWindowParam_X.ImguiDockingWindowCollection[i_U32].Ratio_f, nullptr, &_rDockingWindowParam_X.DockSpaceId);
+              break;
+            case BOF_IMGUI_DOCKING_WINDOW_UP:
+              _rDockingWindowParam_X.ImguiDockingWindowCollection[i_U32].Id = ImGui::DockBuilderSplitNode(_rDockingWindowParam_X.DockSpaceId, ImGuiDir_Up, _rDockingWindowParam_X.ImguiDockingWindowCollection[i_U32].Ratio_f, nullptr, &_rDockingWindowParam_X.DockSpaceId);
+              break;
+            case BOF_IMGUI_DOCKING_WINDOW_DOWN:
+              _rDockingWindowParam_X.ImguiDockingWindowCollection[i_U32].Id = ImGui::DockBuilderSplitNode(_rDockingWindowParam_X.DockSpaceId, ImGuiDir_Down, _rDockingWindowParam_X.ImguiDockingWindowCollection[i_U32].Ratio_f, nullptr, &_rDockingWindowParam_X.DockSpaceId);
+              break;
+          }
+          ImGui::DockBuilderDockWindow(_rDockingWindowParam_X.ImguiDockingWindowCollection[i_U32].Name_S.c_str(), _rDockingWindowParam_X.ImguiDockingWindowCollection[i_U32].Id);
+        }
+      }
+      ImGui::DockBuilderFinish(_rDockingWindowParam_X.DockSpaceId);
+    }
+    ImGui::End();
+  }
+  return Rts_E;
+}
 
 std::string Bof_ImGui::S_GetKeyboardState()
 {
@@ -159,7 +230,10 @@ BOFERR Bof_ImGui::MainLoop()
   if (Rts_E == BOF_ERR_NO_ERROR)
   {
     mShowDemoWindow_B = mImguiParam_X.ShowDemoWindow_B;
-
+    if (mImguiParam_X.WindowTitle_S == "")
+    {
+      mImguiParam_X.WindowTitle_S = "DearImguiWnd";
+    }
     // HelloImGui::SimpleRunnerParams simpleRunnerParams;
     // simpleRunnerParams.guiFunction = MyGui;
     // simpleRunnerParams.windowSizeAuto = true;
@@ -200,26 +274,42 @@ BOFERR Bof_ImGui::MainLoop()
     RunnerParam_X.callbacks.RegisterTests = BOF_BIND_0_ARG_TO_METHOD(this, Bof_ImGui::V_RegisterTests);
 
     RunnerParam_X.appWindowParams.windowTitle = mImguiParam_X.WindowTitle_S;
+
     RunnerParam_X.appWindowParams.windowGeometry.size[0] = mImguiParam_X.Size_X.Width;
     RunnerParam_X.appWindowParams.windowGeometry.size[1] = mImguiParam_X.Size_X.Height;
-    // If true, adapt the app window size to the presented widgets. This is done at startup
-    ////RunnerParam_X.appWindowParams.windowGeometry.sizeAuto = true;
-    // If true, the application window will try to resize based on its content on the next displayed frame
-    ////RunnerParam_X.appWindowParams.windowGeometry.resizeAppWindowAtNextFrame = true;
-
-    RunnerParam_X.appWindowParams.windowGeometry.fullScreenMode = HelloImGui::FullScreenMode::NoFullScreen;
-    RunnerParam_X.appWindowParams.windowGeometry.positionMode = HelloImGui::WindowPositionMode::MonitorCenter; // OsDefault;
-    // used if windowPositionMode==FromCoords, default=(40, 40)
-    RunnerParam_X.appWindowParams.windowGeometry.position = HelloImGui::DefaultScreenPosition;
-    // used if positionMode==MonitorCenter or if fullScreenMode!=NoFullScreen
-    RunnerParam_X.appWindowParams.windowGeometry.monitorIdx = 0;
-    RunnerParam_X.appWindowParams.windowGeometry.windowSizeState = HelloImGui::WindowSizeState::Standard;
+    RunnerParam_X.appWindowParams.windowGeometry.sizeAuto = false;
+    //RunnerParam_X.appWindowParams.windowGeometry.windowSizeState = HelloImGui::WindowSizeState::Maximized;
     RunnerParam_X.appWindowParams.windowGeometry.windowSizeMeasureMode = HelloImGui::WindowSizeMeasureMode::RelativeTo96Ppi;
+    if (mImguiParam_X.CenterWindow_B)
+    {
+      RunnerParam_X.appWindowParams.windowGeometry.positionMode = HelloImGui::WindowPositionMode::MonitorCenter; 
+      RunnerParam_X.appWindowParams.windowGeometry.position = HelloImGui::DefaultScreenPosition;
+    }
+    else
+    {
+      RunnerParam_X.appWindowParams.windowGeometry.positionMode = HelloImGui::WindowPositionMode::FromCoords; 
+      RunnerParam_X.appWindowParams.windowGeometry.position = {mImguiParam_X.Pos_X.x,mImguiParam_X.Pos_X.y};
+    }
+    RunnerParam_X.appWindowParams.windowGeometry.monitorIdx = mImguiParam_X.MonitorIndex_U32;
+    if (mImguiParam_X.FullScreen_B)
+    {
+      RunnerParam_X.appWindowParams.windowGeometry.fullScreenMode = HelloImGui::FullScreenMode::FullMonitorWorkArea; //FullMonitorWorkArea; //No Title // FullScreenDesktopResolution; //no mouse cursor
+    }
+    else
+    {
+      RunnerParam_X.appWindowParams.windowGeometry.fullScreenMode = HelloImGui::FullScreenMode::NoFullScreen;
+    }
+    RunnerParam_X.appWindowParams.windowGeometry.resizeAppWindowAtNextFrame = false;
+
     // if true, then save & restore from last run
     RunnerParam_X.appWindowParams.restorePreviousGeometry = false;
-    RunnerParam_X.appWindowParams.borderless = false;
     RunnerParam_X.appWindowParams.resizable = true;
     RunnerParam_X.appWindowParams.hidden = false;
+    RunnerParam_X.appWindowParams.borderless = false;
+    RunnerParam_X.appWindowParams.borderlessMovable = true;
+    RunnerParam_X.appWindowParams.borderlessResizable = true;
+    RunnerParam_X.appWindowParams.borderlessClosable = true;
+    RunnerParam_X.appWindowParams.borderlessHighlightColor = ImVec4(0.2f, 0.4f, 1.f, 0.3f);
 
     RunnerParam_X.appWindowParams.edgeInsets.top = 0;
     RunnerParam_X.appWindowParams.edgeInsets.left = 0;
@@ -228,20 +318,20 @@ BOFERR Bof_ImGui::MainLoop()
     RunnerParam_X.appWindowParams.handleEdgeInsets = true;
 
     RunnerParam_X.imGuiWindowParams.defaultImGuiWindowType = HelloImGui::DefaultImGuiWindowType::ProvideFullScreenDockSpace;
-    // Above at if (S_HexaColor(mImguiParam_X.BackgroudHexaColor_S, pColor_U8)):  RunnerParam_X.imGuiWindowParams.backgroundColor = ImVec4(1.f, 0.f, 0.f, 0.f);
-    //  In order to fully customize the menu, set showMenuBar to true, and set showMenu_App and showMenu_View params to false.Then, implement the
-    //  callback `RunnerParams.callbacks.ShowMenus` which can optionally call `HelloImGui::ShowViewMenu` and `HelloImGui::ShowAppMenu`.
-    RunnerParam_X.imGuiWindowParams.showMenuBar = mImguiParam_X.ShowMenuBar_B;
-    RunnerParam_X.imGuiWindowParams.showMenu_App = false;
-    RunnerParam_X.imGuiWindowParams.showMenu_View = false;
-    // Set this to false if you intend to provide your own quit callback with possible user confirmation(and implement it inside RunnerCallbacks.ShowAppMenuItems)
-    RunnerParam_X.imGuiWindowParams.showMenu_App_Quit = true;
-    RunnerParam_X.imGuiWindowParams.showStatusBar = mImguiParam_X.ShowStatusBar_B;
-    RunnerParam_X.imGuiWindowParams.showStatus_Fps = true;
-    RunnerParam_X.imGuiWindowParams.rememberStatusBarSettings = false;
+    RunnerParam_X.imGuiWindowParams.enableViewports = false;
     RunnerParam_X.imGuiWindowParams.configWindowsMoveFromTitleBarOnly = false;
-    RunnerParam_X.imGuiWindowParams.enableViewports = true;
-    RunnerParam_X.imGuiWindowParams.menuAppTitle = mImguiParam_X.WindowTitle_S;
+    RunnerParam_X.imGuiWindowParams.menuAppTitle = (mImguiParam_X.MenuTitle_S=="") ? mImguiParam_X.WindowTitle_S: mImguiParam_X.MenuTitle_S;
+    RunnerParam_X.imGuiWindowParams.showMenuBar = mImguiParam_X.ShowMenuBar_B;
+    RunnerParam_X.imGuiWindowParams.showMenu_App = mImguiParam_X.ShowMenuBar_B;
+    RunnerParam_X.imGuiWindowParams.showMenu_App_Quit = mImguiParam_X.ShowMenuBar_B;
+    RunnerParam_X.imGuiWindowParams.showMenu_View = mImguiParam_X.ShowMenuBar_B;
+    RunnerParam_X.imGuiWindowParams.showMenu_View_Themes = mImguiParam_X.ShowMenuBar_B;
+    RunnerParam_X.imGuiWindowParams.rememberTheme = true;
+    RunnerParam_X.imGuiWindowParams.showStatusBar = mImguiParam_X.ShowStatusBar_B;
+    RunnerParam_X.imGuiWindowParams.showStatus_Fps = mImguiParam_X.ShowStatusBar_B;
+    RunnerParam_X.imGuiWindowParams.rememberStatusBarSettings = false;
+    RunnerParam_X.imGuiWindowParams.fullScreenWindow_MarginTopLeft = ImVec2(0.f, 0.f);
+    RunnerParam_X.imGuiWindowParams.fullScreenWindow_MarginBottomRight = ImVec2(0.f, 0.f);
     RunnerParam_X.imGuiWindowParams.tweakedTheme.Theme = ImGuiTheme::ImGuiTheme_DarculaDarker;
 
     // Common rounding for widgets. If < 0, this is ignored.
@@ -265,9 +355,6 @@ BOFERR Bof_ImGui::MainLoop()
     // (Background of checkbox, radio button, plot, slider, text input)
     RunnerParam_X.imGuiWindowParams.tweakedTheme.Tweaks.ValueMultiplierFrameBg = -1.f;
 
-    RunnerParam_X.imGuiWindowParams.showMenu_View_Themes = true;
-    RunnerParam_X.imGuiWindowParams.rememberTheme = true;
-
     // RunnerParam_X.dockingParams.dockingSplits;
     //  RunnerParam_X.dockingParams.dockableWindows;
     //  RunnerParam_X.dockingParams.layoutName = "Default";
@@ -278,19 +365,20 @@ BOFERR Bof_ImGui::MainLoop()
     //  RunnerParam_X.dockingParams.focusDockableWindow(const std::string &windowName);
     //  RunnerParam_X.dockingParams.dockSpaceIdFromName(const std::string &dockSpaceName);
     RunnerParam_X.rememberSelectedAlternativeLayout = false;
-
-    // These pointers will be filled when the application starts, and you can use them to customize your application behavior using the selected backend.
-    // RunnerParam_X.backendPointers;
+    //  RunnerParam_X.alternativeDockingLayouts
+    //  RunnerParam_X.backendPointers;
+    //  RunnerParam_X.rendererBackendOptions;
     RunnerParam_X.platformBackendType = HelloImGui::PlatformBackendType::FirstAvailable;
     RunnerParam_X.rendererBackendType = HelloImGui::RendererBackendType::FirstAvailable;
-    RunnerParam_X.fpsIdling.enableIdling = true;
-    RunnerParam_X.useImGuiTestEngine = false;
-
     RunnerParam_X.iniFolderType = HelloImGui::IniFolderType::CurrentFolder;
     RunnerParam_X.iniFilename = ""; // relative to iniFolderType
     RunnerParam_X.iniFilename_useAppWindowTitle = true;
     RunnerParam_X.appShallExit = false;
+    RunnerParam_X.fpsIdling.enableIdling = true;
+    //  RunnerParam_X.dpiAwareParams
     RunnerParam_X.emscripten_fps = 0;
+    RunnerParam_X.useImGuiTestEngine = false;
+
 #endif
     HelloImGui::Run(RunnerParam_X);
 
@@ -471,11 +559,11 @@ void Bof_ImGui::V_CustomBackground()
 }
 void Bof_ImGui::V_ShowMenus()
 {
-  DBG_LOG("V_ShowMenus\n", 0);
+  //DBG_LOG("V_ShowMenus\n", 0);
 }
 void Bof_ImGui::V_ShowStatus()
 {
-  DBG_LOG("V_ShowStatus\n", 0);
+//  DBG_LOG("V_ShowStatus\n", 0);
 }
 void Bof_ImGui::V_ShowGui()
 {
@@ -769,7 +857,7 @@ bool Bof_ImGui::V_AnyBackendEventCallback(void *_pEvent)
 }
 void Bof_ImGui::V_ShowAppMenuItems()
 {
-  DBG_LOG("V_ShowAppMenuItems\n", 0);
+//  DBG_LOG("V_ShowAppMenuItems\n", 0);
 }
 
 void Bof_ImGui::V_BeforeExit()
