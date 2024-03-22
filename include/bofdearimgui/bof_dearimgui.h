@@ -25,13 +25,13 @@ HELLOIMGUI SDL based project define the following symbols
 HELLOIMGUI_USE_GLAD
 IMGUI_IMPL_OPENGL_LOADER_GLAD
 HELLOIMGUI_USE_SDL_OPENGL3
-HELLOIMGUI_USE_SDL
+HELLOIMGUI_USE_SDL2
 HELLOIMGUI_HAS_OPENGL
 
 if WIN32 def, we use Glfw: HELLOIMGUI_USE_GLFW
 */
 
-#if defined(HELLOIMGUI_USE_SDL)
+#if defined(HELLOIMGUI_USE_SDL2)
 /*
 Under windows, Hello ImGui will automatically provide a WinMain() function that will call main, and expects its signature to be int main(int, char**).
 You may get a linker error if your main function signature is for example int main().
@@ -337,6 +337,9 @@ public:
   ImFont *LoadFont(const char *_pFontFileTtf_c, uint32_t _FontSizeInPixel_U32);
   static bool S_HexaColor(const std::string &_rHexaColor_S, uint8_t(&_rColor_U8)[4]); //#RRGGBB or #RRGGBBAA
   BOFERR PrepareDockedWindow(BOF_IMGUI_DOCKING_WINDOW_PARAM &_rDockingWindowParam_X);
+  void *GetWindowBackendPointer();
+  void ToggleFullscreenMode(bool _FullscreenModeOn_B);
+  bool IsFullscreenModeOn();
 
 protected:
   virtual BOFERR V_ReadSettings() = 0;
@@ -365,11 +368,12 @@ protected:
 
 private:
   void HandleComputerKeyboard();
- 
+  HelloImGui::RunnerParams mRunnerParam_X;
 
 private:
   BOF_IMGUI_PARAM mImguiParam_X;
   BOFERR mLastError_E;
+  bool mFullscreenModeOn_B = false;
 
   bool mShowDemoWindow_B = false;
   bool mShowDemoAnotherWindow_B = false;

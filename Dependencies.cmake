@@ -18,7 +18,7 @@ endmacro()
 
 # == REQUIRED DEPENDENCIES ==
 find_package(bofstd CONFIG REQUIRED)
-find_package(sdl2 CONFIG REQUIRED)
+find_package(SDL2 CONFIG REQUIRED)
 find_package(hello-imgui CONFIG REQUIRED)
 
 if (EMSCRIPTEN)

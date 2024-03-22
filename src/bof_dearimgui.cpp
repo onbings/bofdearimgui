@@ -33,13 +33,13 @@ void LogHelper(Logger &_rLogFunction, const char *_pFormat_c, ...)
 }
 
 // DBG_LOG macro for conditionally logging messages
-#define DBG_LOG(fmt, ...)                                   \
-  do                                                        \
-  {                                                         \
-    if (mImguiParam_X.TheLogger)                            \
-    {                                                       \
+#define DBG_LOG(fmt, ...)                                     \
+  do                                                          \
+  {                                                           \
+    if (mImguiParam_X.TheLogger)                              \
+    {                                                         \
       LogHelper(mImguiParam_X.TheLogger, fmt, ##__VA_ARGS__); \
-    }                                                       \
+    }                                                         \
   } while (0)
 
 Bof_ImGui::Bof_ImGui(const BOF_IMGUI_PARAM &_rImguiParam_X)
@@ -110,7 +110,7 @@ BOFERR Bof_ImGui::DisplayText(BOF::BOF_POINT_2D<int32_t> *_pCursorPos_X, const c
   }
   return Rts_E;
 }
-//https://github.com/ocornut/imgui/issues/4430
+// https://github.com/ocornut/imgui/issues/4430
 
 BOFERR Bof_ImGui::PrepareDockedWindow(BOF_IMGUI_DOCKING_WINDOW_PARAM &_rDockingWindowParam_X)
 {
@@ -143,7 +143,7 @@ BOFERR Bof_ImGui::PrepareDockedWindow(BOF_IMGUI_DOCKING_WINDOW_PARAM &_rDockingW
     ImGui::PopStyleVar(2);
 
     _rDockingWindowParam_X.DockSpaceId = ImGui::GetID("MyDockSpace");
-    //ImGuiID DockSpaceId = ImGui::GetMainViewport()->ID;
+    // ImGuiID DockSpaceId = ImGui::GetMainViewport()->ID;
     ImGui::DockSpace(_rDockingWindowParam_X.DockSpaceId, ImVec2(0.0f, 0.0f), _rDockingWindowParam_X.DockspaceFlag);
     if (!_rDockingWindowParam_X.InitDone_B)
     {
@@ -224,7 +224,6 @@ void MyGui()
 BOFERR Bof_ImGui::MainLoop()
 {
   BOFERR Rts_E = mLastError_E;
-  HelloImGui::RunnerParams RunnerParam_X;
   uint8_t pColor_U8[4];
   // emscripten_set_main_loop_arg(emscripten_imgui_main_loop, NULL, 0, true);
   if (Rts_E == BOF_ERR_NO_ERROR)
@@ -247,140 +246,147 @@ BOFERR Bof_ImGui::MainLoop()
     #endif
     */
 #if 1
-    RunnerParam_X.callbacks.SetupImGuiConfig = BOF_BIND_0_ARG_TO_METHOD(this, Bof_ImGui::V_SetupImGuiConfig);
-    RunnerParam_X.callbacks.SetupImGuiStyle = BOF_BIND_0_ARG_TO_METHOD(this, Bof_ImGui::V_SetupImGuiStyle);
-    RunnerParam_X.callbacks.PostInit = BOF_BIND_0_ARG_TO_METHOD(this, Bof_ImGui::V_PostInit);
-    RunnerParam_X.callbacks.LoadAdditionalFonts = BOF_BIND_0_ARG_TO_METHOD(this, Bof_ImGui::V_LoadAdditionalFonts);
-    RunnerParam_X.callbacks.PreNewFrame = BOF_BIND_0_ARG_TO_METHOD(this, Bof_ImGui::V_PreNewFrame);
-    // If callback not defined, call Impl_Frame_3D_ClearColor(); with RunnerParam_X.imGuiWindowParams.backgroundColor (BackgroudHexaColor_S)
+    mRunnerParam_X.callbacks.SetupImGuiConfig = BOF_BIND_0_ARG_TO_METHOD(this, Bof_ImGui::V_SetupImGuiConfig);
+    mRunnerParam_X.callbacks.SetupImGuiStyle = BOF_BIND_0_ARG_TO_METHOD(this, Bof_ImGui::V_SetupImGuiStyle);
+    mRunnerParam_X.callbacks.PostInit = BOF_BIND_0_ARG_TO_METHOD(this, Bof_ImGui::V_PostInit);
+    mRunnerParam_X.callbacks.LoadAdditionalFonts = BOF_BIND_0_ARG_TO_METHOD(this, Bof_ImGui::V_LoadAdditionalFonts);
+    mRunnerParam_X.callbacks.PreNewFrame = BOF_BIND_0_ARG_TO_METHOD(this, Bof_ImGui::V_PreNewFrame);
+    // If callback not defined, call Impl_Frame_3D_ClearColor(); with mRunnerParam_X.imGuiWindowParams.backgroundColor (BackgroudHexaColor_S)
     if (S_HexaColor(mImguiParam_X.BackgroudHexaColor_S, pColor_U8))
     {
-      RunnerParam_X.imGuiWindowParams.backgroundColor = ImVec4((float)pColor_U8[0] / 255.0f, (float)pColor_U8[1] / 255.0f, (float)pColor_U8[2] / 255.0f, (float)pColor_U8[3] / 255.0f);
+      mRunnerParam_X.imGuiWindowParams.backgroundColor = ImVec4((float)pColor_U8[0] / 255.0f, (float)pColor_U8[1] / 255.0f, (float)pColor_U8[2] / 255.0f, (float)pColor_U8[3] / 255.0f);
     }
     else
     {
-      RunnerParam_X.callbacks.CustomBackground = BOF_BIND_0_ARG_TO_METHOD(this, Bof_ImGui::V_CustomBackground);
+      mRunnerParam_X.callbacks.CustomBackground = BOF_BIND_0_ARG_TO_METHOD(this, Bof_ImGui::V_CustomBackground);
     }
-    RunnerParam_X.callbacks.CustomBackground = nullptr;
-    RunnerParam_X.callbacks.ShowMenus = BOF_BIND_0_ARG_TO_METHOD(this, Bof_ImGui::V_ShowMenus);
-    RunnerParam_X.callbacks.ShowStatus = BOF_BIND_0_ARG_TO_METHOD(this, Bof_ImGui::V_ShowStatus);
-    RunnerParam_X.callbacks.ShowGui = BOF_BIND_0_ARG_TO_METHOD(this, Bof_ImGui::V_ShowGui);
-    RunnerParam_X.callbacks.BeforeImGuiRender = BOF_BIND_0_ARG_TO_METHOD(this, Bof_ImGui::V_BeforeImGuiRender);
-    RunnerParam_X.callbacks.AfterSwap = BOF_BIND_0_ARG_TO_METHOD(this, Bof_ImGui::V_AfterSwap);
-    RunnerParam_X.callbacks.AnyBackendEventCallback = BOF_BIND_1_ARG_TO_METHOD(this, Bof_ImGui::V_AnyBackendEventCallback);
-    RunnerParam_X.callbacks.ShowAppMenuItems = BOF_BIND_0_ARG_TO_METHOD(this, Bof_ImGui::V_ShowAppMenuItems);
-    RunnerParam_X.callbacks.BeforeExit = BOF_BIND_0_ARG_TO_METHOD(this, Bof_ImGui::V_BeforeExit);
-    RunnerParam_X.callbacks.BeforeExit_PostCleanup = BOF_BIND_0_ARG_TO_METHOD(this, Bof_ImGui::V_BeforeExit_PostCleanup);
-    RunnerParam_X.callbacks.RegisterTests = BOF_BIND_0_ARG_TO_METHOD(this, Bof_ImGui::V_RegisterTests);
+    mRunnerParam_X.callbacks.CustomBackground = nullptr;
+    mRunnerParam_X.callbacks.ShowMenus = BOF_BIND_0_ARG_TO_METHOD(this, Bof_ImGui::V_ShowMenus);
+    mRunnerParam_X.callbacks.ShowStatus = BOF_BIND_0_ARG_TO_METHOD(this, Bof_ImGui::V_ShowStatus);
+    mRunnerParam_X.callbacks.ShowGui = BOF_BIND_0_ARG_TO_METHOD(this, Bof_ImGui::V_ShowGui);
+    mRunnerParam_X.callbacks.BeforeImGuiRender = BOF_BIND_0_ARG_TO_METHOD(this, Bof_ImGui::V_BeforeImGuiRender);
+    mRunnerParam_X.callbacks.AfterSwap = BOF_BIND_0_ARG_TO_METHOD(this, Bof_ImGui::V_AfterSwap);
+    mRunnerParam_X.callbacks.AnyBackendEventCallback = BOF_BIND_1_ARG_TO_METHOD(this, Bof_ImGui::V_AnyBackendEventCallback);
+    mRunnerParam_X.callbacks.ShowAppMenuItems = BOF_BIND_0_ARG_TO_METHOD(this, Bof_ImGui::V_ShowAppMenuItems);
+    mRunnerParam_X.callbacks.BeforeExit = BOF_BIND_0_ARG_TO_METHOD(this, Bof_ImGui::V_BeforeExit);
+    mRunnerParam_X.callbacks.BeforeExit_PostCleanup = BOF_BIND_0_ARG_TO_METHOD(this, Bof_ImGui::V_BeforeExit_PostCleanup);
+    mRunnerParam_X.callbacks.RegisterTests = BOF_BIND_0_ARG_TO_METHOD(this, Bof_ImGui::V_RegisterTests);
 
-    RunnerParam_X.appWindowParams.windowTitle = mImguiParam_X.WindowTitle_S;
+    mRunnerParam_X.appWindowParams.windowTitle = mImguiParam_X.WindowTitle_S;
 
-    RunnerParam_X.appWindowParams.windowGeometry.size[0] = mImguiParam_X.Size_X.Width;
-    RunnerParam_X.appWindowParams.windowGeometry.size[1] = mImguiParam_X.Size_X.Height;
-    RunnerParam_X.appWindowParams.windowGeometry.sizeAuto = false;
-    //RunnerParam_X.appWindowParams.windowGeometry.windowSizeState = HelloImGui::WindowSizeState::Maximized;
-    RunnerParam_X.appWindowParams.windowGeometry.windowSizeMeasureMode = HelloImGui::WindowSizeMeasureMode::RelativeTo96Ppi;
+    mRunnerParam_X.appWindowParams.windowGeometry.size[0] = mImguiParam_X.Size_X.Width;
+    mRunnerParam_X.appWindowParams.windowGeometry.size[1] = mImguiParam_X.Size_X.Height;
+    mRunnerParam_X.appWindowParams.windowGeometry.sizeAuto = false;
+    // mRunnerParam_X.appWindowParams.windowGeometry.windowSizeState = HelloImGui::WindowSizeState::Maximized;
+    mRunnerParam_X.appWindowParams.windowGeometry.windowSizeMeasureMode = HelloImGui::WindowSizeMeasureMode::RelativeTo96Ppi;
     if (mImguiParam_X.CenterWindow_B)
     {
-      RunnerParam_X.appWindowParams.windowGeometry.positionMode = HelloImGui::WindowPositionMode::MonitorCenter; 
-      RunnerParam_X.appWindowParams.windowGeometry.position = HelloImGui::DefaultScreenPosition;
+      mRunnerParam_X.appWindowParams.windowGeometry.positionMode = HelloImGui::WindowPositionMode::MonitorCenter;
+      mRunnerParam_X.appWindowParams.windowGeometry.position = HelloImGui::DefaultScreenPosition;
     }
     else
     {
-      RunnerParam_X.appWindowParams.windowGeometry.positionMode = HelloImGui::WindowPositionMode::FromCoords; 
-      RunnerParam_X.appWindowParams.windowGeometry.position = {mImguiParam_X.Pos_X.x,mImguiParam_X.Pos_X.y};
+      mRunnerParam_X.appWindowParams.windowGeometry.positionMode = HelloImGui::WindowPositionMode::FromCoords;
+      mRunnerParam_X.appWindowParams.windowGeometry.position = {mImguiParam_X.Pos_X.x, mImguiParam_X.Pos_X.y};
     }
-    RunnerParam_X.appWindowParams.windowGeometry.monitorIdx = mImguiParam_X.MonitorIndex_U32;
+    mRunnerParam_X.appWindowParams.windowGeometry.monitorIdx = mImguiParam_X.MonitorIndex_U32;
     if (mImguiParam_X.FullScreen_B)
     {
-      RunnerParam_X.appWindowParams.windowGeometry.fullScreenMode = HelloImGui::FullScreenMode::FullMonitorWorkArea; //FullMonitorWorkArea; //No Title // FullScreenDesktopResolution; //no mouse cursor
+      mFullscreenModeOn_B = true;
+//Ok and fast but limitted to current desktop res
+      mRunnerParam_X.appWindowParams.windowGeometry.fullScreenMode = HelloImGui::FullScreenMode::FullScreenDesktopResolution;
+//Ok but takes sometime when switching between windowed and fullscreen mode
+//      mRunnerParam_X.appWindowParams.windowGeometry.fullScreenMode = HelloImGui::FullScreenMode::FullScreen; // Ok
+// No Title but no real full screen, just a window with no title which takes all the space->no move no resize
+      //mRunnerParam_X.appWindowParams.windowGeometry.fullScreenMode = HelloImGui::FullScreenMode::FullMonitorWorkArea;
     }
     else
     {
-      RunnerParam_X.appWindowParams.windowGeometry.fullScreenMode = HelloImGui::FullScreenMode::NoFullScreen;
+      mFullscreenModeOn_B = false;
+      mRunnerParam_X.appWindowParams.windowGeometry.fullScreenMode = HelloImGui::FullScreenMode::NoFullScreen;
     }
-    RunnerParam_X.appWindowParams.windowGeometry.resizeAppWindowAtNextFrame = false;
+    mRunnerParam_X.appWindowParams.windowGeometry.resizeAppWindowAtNextFrame = false;
 
     // if true, then save & restore from last run
-    RunnerParam_X.appWindowParams.restorePreviousGeometry = false;
-    RunnerParam_X.appWindowParams.resizable = true;
-    RunnerParam_X.appWindowParams.hidden = false;
-    RunnerParam_X.appWindowParams.borderless = false;
-    RunnerParam_X.appWindowParams.borderlessMovable = true;
-    RunnerParam_X.appWindowParams.borderlessResizable = true;
-    RunnerParam_X.appWindowParams.borderlessClosable = true;
-    RunnerParam_X.appWindowParams.borderlessHighlightColor = ImVec4(0.2f, 0.4f, 1.f, 0.3f);
+    mRunnerParam_X.appWindowParams.restorePreviousGeometry = false;
+    mRunnerParam_X.appWindowParams.resizable = true;
+    mRunnerParam_X.appWindowParams.hidden = false;
+    mRunnerParam_X.appWindowParams.borderless = false;
+    mRunnerParam_X.appWindowParams.borderlessMovable = true;
+    mRunnerParam_X.appWindowParams.borderlessResizable = true;
+    mRunnerParam_X.appWindowParams.borderlessClosable = true;
+    mRunnerParam_X.appWindowParams.borderlessHighlightColor = ImVec4(0.2f, 0.4f, 1.f, 0.3f);
 
-    RunnerParam_X.appWindowParams.edgeInsets.top = 0;
-    RunnerParam_X.appWindowParams.edgeInsets.left = 0;
-    RunnerParam_X.appWindowParams.edgeInsets.bottom = 0;
-    RunnerParam_X.appWindowParams.edgeInsets.right = 0;
-    RunnerParam_X.appWindowParams.handleEdgeInsets = true;
+    mRunnerParam_X.appWindowParams.edgeInsets.top = 0;
+    mRunnerParam_X.appWindowParams.edgeInsets.left = 0;
+    mRunnerParam_X.appWindowParams.edgeInsets.bottom = 0;
+    mRunnerParam_X.appWindowParams.edgeInsets.right = 0;
+    mRunnerParam_X.appWindowParams.handleEdgeInsets = true;
 
-    RunnerParam_X.imGuiWindowParams.defaultImGuiWindowType = HelloImGui::DefaultImGuiWindowType::ProvideFullScreenDockSpace;
-    RunnerParam_X.imGuiWindowParams.enableViewports = false;
-    RunnerParam_X.imGuiWindowParams.configWindowsMoveFromTitleBarOnly = false;
-    RunnerParam_X.imGuiWindowParams.menuAppTitle = (mImguiParam_X.MenuTitle_S=="") ? mImguiParam_X.WindowTitle_S: mImguiParam_X.MenuTitle_S;
-    RunnerParam_X.imGuiWindowParams.showMenuBar = mImguiParam_X.ShowMenuBar_B;
-    RunnerParam_X.imGuiWindowParams.showMenu_App = mImguiParam_X.ShowMenuBar_B;
-    RunnerParam_X.imGuiWindowParams.showMenu_App_Quit = mImguiParam_X.ShowMenuBar_B;
-    RunnerParam_X.imGuiWindowParams.showMenu_View = mImguiParam_X.ShowMenuBar_B;
-    RunnerParam_X.imGuiWindowParams.showMenu_View_Themes = mImguiParam_X.ShowMenuBar_B;
-    RunnerParam_X.imGuiWindowParams.rememberTheme = true;
-    RunnerParam_X.imGuiWindowParams.showStatusBar = mImguiParam_X.ShowStatusBar_B;
-    RunnerParam_X.imGuiWindowParams.showStatus_Fps = mImguiParam_X.ShowStatusBar_B;
-    RunnerParam_X.imGuiWindowParams.rememberStatusBarSettings = false;
-    RunnerParam_X.imGuiWindowParams.fullScreenWindow_MarginTopLeft = ImVec2(0.f, 0.f);
-    RunnerParam_X.imGuiWindowParams.fullScreenWindow_MarginBottomRight = ImVec2(0.f, 0.f);
-    RunnerParam_X.imGuiWindowParams.tweakedTheme.Theme = ImGuiTheme::ImGuiTheme_DarculaDarker;
+    mRunnerParam_X.imGuiWindowParams.defaultImGuiWindowType = HelloImGui::DefaultImGuiWindowType::ProvideFullScreenDockSpace;
+    mRunnerParam_X.imGuiWindowParams.enableViewports = false;
+    mRunnerParam_X.imGuiWindowParams.configWindowsMoveFromTitleBarOnly = false;
+    mRunnerParam_X.imGuiWindowParams.menuAppTitle = (mImguiParam_X.MenuTitle_S == "") ? mImguiParam_X.WindowTitle_S : mImguiParam_X.MenuTitle_S;
+    mRunnerParam_X.imGuiWindowParams.showMenuBar = mImguiParam_X.ShowMenuBar_B;
+    mRunnerParam_X.imGuiWindowParams.showMenu_App = mImguiParam_X.ShowMenuBar_B;
+    mRunnerParam_X.imGuiWindowParams.showMenu_App_Quit = mImguiParam_X.ShowMenuBar_B;
+    mRunnerParam_X.imGuiWindowParams.showMenu_View = mImguiParam_X.ShowMenuBar_B;
+    mRunnerParam_X.imGuiWindowParams.showMenu_View_Themes = mImguiParam_X.ShowMenuBar_B;
+    mRunnerParam_X.imGuiWindowParams.rememberTheme = true;
+    mRunnerParam_X.imGuiWindowParams.showStatusBar = mImguiParam_X.ShowStatusBar_B;
+    mRunnerParam_X.imGuiWindowParams.showStatus_Fps = mImguiParam_X.ShowStatusBar_B;
+    mRunnerParam_X.imGuiWindowParams.rememberStatusBarSettings = false;
+    mRunnerParam_X.imGuiWindowParams.fullScreenWindow_MarginTopLeft = ImVec2(0.f, 0.f);
+    mRunnerParam_X.imGuiWindowParams.fullScreenWindow_MarginBottomRight = ImVec2(0.f, 0.f);
+    mRunnerParam_X.imGuiWindowParams.tweakedTheme.Theme = ImGuiTheme::ImGuiTheme_DarculaDarker;
 
     // Common rounding for widgets. If < 0, this is ignored.
-    RunnerParam_X.imGuiWindowParams.tweakedTheme.Tweaks.Rounding = -1.f;
+    mRunnerParam_X.imGuiWindowParams.tweakedTheme.Tweaks.Rounding = -1.f;
     // If rounding is applied, scrollbar rounding needs to be adjusted to be visually pleasing in conjunction with other widgets roundings. Only applied if Rounding > 0.f)
-    RunnerParam_X.imGuiWindowParams.tweakedTheme.Tweaks.RoundingScrollbarRatio = 4.f;
+    mRunnerParam_X.imGuiWindowParams.tweakedTheme.Tweaks.RoundingScrollbarRatio = 4.f;
     // Change the alpha that will be applied to windows, popups, etc. If < 0, this is ignored.
-    RunnerParam_X.imGuiWindowParams.tweakedTheme.Tweaks.AlphaMultiplier = -1.f;
+    mRunnerParam_X.imGuiWindowParams.tweakedTheme.Tweaks.AlphaMultiplier = -1.f;
     // HSV Color tweaks
     // Change the hue of all widgets (gray widgets will remain gray, since their saturation is zero). If < 0, this is ignored.
-    RunnerParam_X.imGuiWindowParams.tweakedTheme.Tweaks.Hue = -1.f;
+    mRunnerParam_X.imGuiWindowParams.tweakedTheme.Tweaks.Hue = -1.f;
     // Multiply the saturation of all widgets (gray widgets will remain gray, since their saturation is zero). If < 0, this is ignored.
-    RunnerParam_X.imGuiWindowParams.tweakedTheme.Tweaks.SaturationMultiplier = -1.f;
+    mRunnerParam_X.imGuiWindowParams.tweakedTheme.Tweaks.SaturationMultiplier = -1.f;
     // Multiply the value (luminance) of all front widgets. If < 0, this is ignored.
-    RunnerParam_X.imGuiWindowParams.tweakedTheme.Tweaks.ValueMultiplierFront = -1.f;
+    mRunnerParam_X.imGuiWindowParams.tweakedTheme.Tweaks.ValueMultiplierFront = -1.f;
     // Multiply the value (luminance) of all backgrounds. If < 0, this is ignored.
-    RunnerParam_X.imGuiWindowParams.tweakedTheme.Tweaks.ValueMultiplierBg = -1.f;
+    mRunnerParam_X.imGuiWindowParams.tweakedTheme.Tweaks.ValueMultiplierBg = -1.f;
     // Multiply the value (luminance) of text. If < 0, this is ignored.
-    RunnerParam_X.imGuiWindowParams.tweakedTheme.Tweaks.ValueMultiplierText = -1.f;
+    mRunnerParam_X.imGuiWindowParams.tweakedTheme.Tweaks.ValueMultiplierText = -1.f;
     // Multiply the value (luminance) of FrameBg. If < 0, this is ignored.
     // (Background of checkbox, radio button, plot, slider, text input)
-    RunnerParam_X.imGuiWindowParams.tweakedTheme.Tweaks.ValueMultiplierFrameBg = -1.f;
+    mRunnerParam_X.imGuiWindowParams.tweakedTheme.Tweaks.ValueMultiplierFrameBg = -1.f;
 
-    // RunnerParam_X.dockingParams.dockingSplits;
-    //  RunnerParam_X.dockingParams.dockableWindows;
-    //  RunnerParam_X.dockingParams.layoutName = "Default";
-    //  RunnerParam_X.dockingParams.layoutCondition = DockingLayoutCondition::FirstUseEver;
-    //  RunnerParam_X.dockingParams.layoutReset = false;
-    //  RunnerParam_X.dockingParams.mainDockSpaceNodeFlags = ImGuiDockNodeFlags_PassthruCentralNode;
-    //  RunnerParam_X.dockingParams.dockableWindowOfName(const std::string &name);
-    //  RunnerParam_X.dockingParams.focusDockableWindow(const std::string &windowName);
-    //  RunnerParam_X.dockingParams.dockSpaceIdFromName(const std::string &dockSpaceName);
-    RunnerParam_X.rememberSelectedAlternativeLayout = false;
-    //  RunnerParam_X.alternativeDockingLayouts
-    //  RunnerParam_X.backendPointers;
-    //  RunnerParam_X.rendererBackendOptions;
-    RunnerParam_X.platformBackendType = HelloImGui::PlatformBackendType::FirstAvailable;
-    RunnerParam_X.rendererBackendType = HelloImGui::RendererBackendType::FirstAvailable;
-    RunnerParam_X.iniFolderType = HelloImGui::IniFolderType::CurrentFolder;
-    RunnerParam_X.iniFilename = ""; // relative to iniFolderType
-    RunnerParam_X.iniFilename_useAppWindowTitle = true;
-    RunnerParam_X.appShallExit = false;
-    RunnerParam_X.fpsIdling.enableIdling = true;
-    //  RunnerParam_X.dpiAwareParams
-    RunnerParam_X.emscripten_fps = 0;
-    RunnerParam_X.useImGuiTestEngine = false;
+    // mRunnerParam_X.dockingParams.dockingSplits;
+    //  mRunnerParam_X.dockingParams.dockableWindows;
+    //  mRunnerParam_X.dockingParams.layoutName = "Default";
+    //  mRunnerParam_X.dockingParams.layoutCondition = DockingLayoutCondition::FirstUseEver;
+    //  mRunnerParam_X.dockingParams.layoutReset = false;
+    //  mRunnerParam_X.dockingParams.mainDockSpaceNodeFlags = ImGuiDockNodeFlags_PassthruCentralNode;
+    //  mRunnerParam_X.dockingParams.dockableWindowOfName(const std::string &name);
+    //  mRunnerParam_X.dockingParams.focusDockableWindow(const std::string &windowName);
+    //  mRunnerParam_X.dockingParams.dockSpaceIdFromName(const std::string &dockSpaceName);
+    mRunnerParam_X.rememberSelectedAlternativeLayout = false;
+    //  mRunnerParam_X.alternativeDockingLayouts
+    //  mRunnerParam_X.backendPointers;
+    //  mRunnerParam_X.rendererBackendOptions;
+    mRunnerParam_X.platformBackendType = HelloImGui::PlatformBackendType::FirstAvailable;
+    mRunnerParam_X.rendererBackendType = HelloImGui::RendererBackendType::FirstAvailable;
+    mRunnerParam_X.iniFolderType = HelloImGui::IniFolderType::CurrentFolder;
+    mRunnerParam_X.iniFilename = ""; // relative to iniFolderType
+    mRunnerParam_X.iniFilename_useAppWindowTitle = true;
+    mRunnerParam_X.appShallExit = false;
+    mRunnerParam_X.fpsIdling.enableIdling = true;
+    //  mRunnerParam_X.dpiAwareParams
+    mRunnerParam_X.emscripten_fps = 0;
+    mRunnerParam_X.useImGuiTestEngine = false;
 
 #endif
-    HelloImGui::Run(RunnerParam_X);
+    HelloImGui::Run(mRunnerParam_X);
 
     // HelloImGui::SimpleRunnerParams SimpleRunnerParam_X;
     // SimpleRunnerParam_X.guiFunction = BOF_BIND_0_ARG_TO_METHOD(this, Bof_ImGui::V_ShowGui);
@@ -389,6 +395,36 @@ BOFERR Bof_ImGui::MainLoop()
   return Rts_E;
 }
 
+void *Bof_ImGui::GetWindowBackendPointer()
+{
+  void *pRts = nullptr;
+#if defined(HELLOIMGUI_USE_SDL2)
+  pRts = mRunnerParam_X.backendPointers.sdlWindow;
+#else
+  pRts = mRunnerParam_X.backendPointers.glfwWindow;
+#endif
+  return pRts;
+}
+
+void Bof_ImGui::ToggleFullscreenMode(bool _FullscreenModeOn_B)
+{
+#if defined(HELLOIMGUI_USE_SDL2)
+  if (_FullscreenModeOn_B)
+  {
+    SDL_SetWindowFullscreen((SDL_Window *)GetWindowBackendPointer(), SDL_WINDOW_FULLSCREEN_DESKTOP); // Switch to fullscreen mode
+    mFullscreenModeOn_B = true;
+  }
+  else
+  {
+    SDL_SetWindowFullscreen((SDL_Window *)GetWindowBackendPointer(), 0); // Switch to windowed mode
+    mFullscreenModeOn_B = false;
+  }
+#endif
+}
+bool Bof_ImGui::IsFullscreenModeOn()
+{
+  return mFullscreenModeOn_B;
+}
 BOFERR Bof_ImGui::SetCursorPos(int32_t _x_S32, int32_t _y_S32)
 {
   BOFERR Rts_E = mLastError_E;
@@ -525,7 +561,7 @@ void Bof_ImGui::V_SetupImGuiConfig()
 {
   DBG_LOG("V_SetupImGuiConfig\n", 0);
 #if defined(_WIN32)
-  //BHA SetProcessDpiAwareness(PROCESS_PER_MONITOR_DPI_AWARE);
+  // BHA SetProcessDpiAwareness(PROCESS_PER_MONITOR_DPI_AWARE);
 #endif
   HelloImGui::ImGuiDefaultSettings::SetupDefaultImGuiConfig(); // io.ConfigFlags |= ImGuiConfigFlags_DockingEnable; ...
 }
@@ -555,20 +591,20 @@ void Bof_ImGui::V_PreNewFrame()
 void Bof_ImGui::V_CustomBackground()
 {
   DBG_LOG("V_CustomBackground\n", 0);
-  // If callback not defined, call Impl_Frame_3D_ClearColor(); with RunnerParam_X.imGuiWindowParams.backgroundColor (BackgroudHexaColor_S)
+  // If callback not defined, call Impl_Frame_3D_ClearColor(); with mRunnerParam_X.imGuiWindowParams.backgroundColor (BackgroudHexaColor_S)
 }
 void Bof_ImGui::V_ShowMenus()
 {
-  //DBG_LOG("V_ShowMenus\n", 0);
+  // DBG_LOG("V_ShowMenus\n", 0);
 }
 void Bof_ImGui::V_ShowStatus()
 {
-//  DBG_LOG("V_ShowStatus\n", 0);
+  //  DBG_LOG("V_ShowStatus\n", 0);
 }
 void Bof_ImGui::V_ShowGui()
 {
-  //DBG_LOG("V_ShowGui\n", 0);
-  // HandleComputerKeyboard();
+  // DBG_LOG("V_ShowGui\n", 0);
+  //  HandleComputerKeyboard();
 
   // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
   if (mImguiParam_X.ShowDemoWindow_B)
@@ -585,16 +621,16 @@ void Bof_ImGui::V_ShowGui()
 }
 void Bof_ImGui::V_BeforeImGuiRender()
 {
-  //DBG_LOG("V_BeforeImGuiRender\n", 0);
+  // DBG_LOG("V_BeforeImGuiRender\n", 0);
 }
 void Bof_ImGui::V_AfterSwap()
 {
- // DBG_LOG("V_AfterSwap\n", 0);
+  // DBG_LOG("V_AfterSwap\n", 0);
 }
 bool Bof_ImGui::V_AnyBackendEventCallback(void *_pEvent)
 {
   bool Rts_B = false; // By default let's the system handle events
-#if defined(HELLOIMGUI_USE_SDL)
+#if defined(HELLOIMGUI_USE_SDL2)
 #if 0
   SDL_Event *pEvent_X = (SDL_Event *)_pEvent;
   // DBG_LOG("V_AnyBackendEventCallback %p\n", pEvent_X);
@@ -851,13 +887,13 @@ bool Bof_ImGui::V_AnyBackendEventCallback(void *_pEvent)
 #endif
 #else
   void *pEvent_X = (void *)_pEvent;
-  //DBG_LOG("AnyBackendEventCallback %p\n", pEvent_X);
+  // DBG_LOG("AnyBackendEventCallback %p\n", pEvent_X);
 #endif
   return Rts_B;
 }
 void Bof_ImGui::V_ShowAppMenuItems()
 {
-//  DBG_LOG("V_ShowAppMenuItems\n", 0);
+  //  DBG_LOG("V_ShowAppMenuItems\n", 0);
 }
 
 void Bof_ImGui::V_BeforeExit()
