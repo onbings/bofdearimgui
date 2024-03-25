@@ -10,18 +10,18 @@
 # 
 
 #Emscripten build
-#cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_INSTALL_PREFIX=C:/bld/evs-xts-web/binaries -DVCPKG_CHAINLOAD_TOOLCHAIN_FILE=C:/pro/emsdk/upstream/emscripten/cmake/Modules/Platform/emscripten.cmake -DCMAKE_TOOLCHAIN_FILE=C:/pro/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=wasm32-emscripten -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Debug -SC:/pro/evs-xts/bofimgui -BC:/bld/bofimgui-web -DCMAKE_CROSSCOMPILING_EMULATOR=C:/pro/emsdk/node/16.20.0_64bit/bin/node.exe -G Ninja
-#cd C:\pro\evs-xts\bofimgui\vcprj
+#cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_INSTALL_PREFIX=C:/bld/evs-xts-web/binaries -DVCPKG_CHAINLOAD_TOOLCHAIN_FILE=C:/pro/emsdk/upstream/emscripten/cmake/Modules/Platform/emscripten.cmake -DCMAKE_TOOLCHAIN_FILE=C:/pro/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=wasm32-emscripten -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Debug -SC:/pro/evs-xts/bofdearimgui -BC:/bld/bofdearimgui-web -DCMAKE_CROSSCOMPILING_EMULATOR=C:/pro/emsdk/node/16.20.0_64bit/bin/node.exe -G Ninja
+#cd C:\pro\evs-xts\bofdearimgui\vcprj
 #vcprj.bat Web
 #Launch VsCode
 #CTRL-ALT-TARGET
-#Select VcRun::WebNode::ut_bofimgui in debug icon
+#Select VcRun::WebNode::ut_bofdearimgui in debug icon
 
 #Windows build
-#cmake -DCMAKE_INSTALL_PREFIX=C:/bld/evs-xts-win/binaries -DCMAKE_TOOLCHAIN_FILE=C:/pro/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-windows-static -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Debug -SC:/pro/evs-xts/bofimgui -BC:/bld/bofimgui-win
+#cmake -DCMAKE_INSTALL_PREFIX=C:/bld/evs-xts-win/binaries -DCMAKE_TOOLCHAIN_FILE=C:/pro/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-windows-static -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Debug -SC:/pro/evs-xts/bofdearimgui -BC:/bld/bofdearimgui-win
 
 #Linux build
-#cmake -DCMAKE_INSTALL_PREFIX=/home/bha/bld/evs-xts-lin/binaries -DCMAKE_TOOLCHAIN_FILE=/home/bha/pro/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-linux -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Debug -S/home/bha/pro/evs-xts/bofimgui -B/home/bha/bld/bofimgui-lin
+#cmake -DCMAKE_INSTALL_PREFIX=/home/bha/bld/evs-xts-lin/binaries -DCMAKE_TOOLCHAIN_FILE=/home/bha/pro/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-linux -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Debug -S/home/bha/pro/evs-xts/bofdearimgui -B/home/bha/bld/bofdearimgui-lin
 
 #cmake --install . --config Debug
 
@@ -36,7 +36,7 @@ include(cmake/fixup_vs_crt.cmake)
 include(cmake/vcpkg_install.cmake)
 include(cmake/fetch_content.cmake)
 
-project(bofimgui VERSION 1.0.0.0)
+project(bofdearimgui VERSION 1.0.0.0)
 include(cmake/compile.cmake)
 include(Dependencies.cmake)
 
@@ -68,7 +68,7 @@ include(cmake/dearimgui.cmake)
 
 target_compile_definitions(${PROJECT_NAME_LOWER_MINUS}
   PRIVATE
-    -D${PROJECT_NAME_LOWER}_EXPORTS=1	#in lower case to define the SYMBOL BOFIMGUI_EXPORT (upper case) in bofimgui_export.h
+    -D${PROJECT_NAME_LOWER}_EXPORTS=1	#in lower case to define the SYMBOL BOFDEARIMGUI_EXPORT (upper case) in bofdearimgui_export.h
 )
 
 if (EMSCRIPTEN)
@@ -83,7 +83,7 @@ target_include_directories(${PROJECT_NAME_LOWER_MINUS}
   PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> 
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>       #for flat model (.h and .cpp in source dir)
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>		#for bofimgui_export.h install (below) 
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>		#for bofdearimgui_export.h install (below) 
 )
 target_link_libraries(${PROJECT_NAME_LOWER_MINUS}
   PRIVATE
