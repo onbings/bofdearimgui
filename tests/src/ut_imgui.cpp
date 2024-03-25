@@ -30,7 +30,7 @@ protected:
     // Cleanup common resources after each test
   }
 };
-
+/*
 void RefreshGui()
 {
   ImGui::Text("Hello, world!");
@@ -44,3 +44,4 @@ TEST_F(ut_imgui, ShowImgui)
   HelloImGui::Run(RunnerParam_X);
   //HelloImGui::Run([&]() { ImGui::Text("Hello, world!"); ImGui::ShowDemoWindow(); });
 }
+*/

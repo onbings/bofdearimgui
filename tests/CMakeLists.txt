@@ -5,10 +5,10 @@ set(DATA_FILES
 )
 
 set(SOURCES_FILES
-	include/gtestrunner.h
-	src/main.cpp
+	./include/gtestrunner.h
+	./src/main.cpp
 
-	src/ut_imgui.cpp
+	./src/ut_imgui.cpp
 )
 
 # For Visual Studio
@@ -22,8 +22,8 @@ endif()
 
 # Create target
 set (UT_NAME ut_imgui)
-#add_executable(${UT_NAME}
-hello_imgui_add_app(${UT_NAME} 
+add_executable(${UT_NAME}
+#hello_imgui_add_app(${UT_NAME} 
   ${SOURCES_FILES}
 )
 # Includes
