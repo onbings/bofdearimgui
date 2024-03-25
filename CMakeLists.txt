@@ -45,6 +45,9 @@ option(${PROJECT_NAME_UPPER_UNDERSCORE}_ENABLE_VERSIONING "Enable library versio
 option(${PROJECT_NAME_UPPER_UNDERSCORE}_FORCE_EXPORT_ALL  "Force exporting all symbols of ${PROJECT_NAME_LOWER} libraries (for shared library)" OFF)
 set(${PROJECT_NAME_UPPER_UNDERSCORE}_EMSCRIPTEN_WASM_EXCEPTION OFF)  #hello-imgui use exception
 
+#got by git clone https://github.com/pthom/hello_imgui.git
+add_subdirectory(hello_imgui)
+
 set(DATA_FILES
 #  ./assets/font/cour.ttf
 )
@@ -81,6 +84,9 @@ endif()
 
 target_include_directories(${PROJECT_NAME_LOWER_MINUS}
   PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/hello_imgui/external/imgui> #imgui
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/hello_imgui/src> #hello_imgui
+
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> 
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>       #for flat model (.h and .cpp in source dir)
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>		#for bofdearimgui_export.h install (below) 

@@ -19,8 +19,8 @@ endmacro()
 # == REQUIRED DEPENDENCIES ==
 find_package(bofstd CONFIG REQUIRED)
 find_package(SDL2 CONFIG REQUIRED)
-find_package(hello-imgui CONFIG REQUIRED)
-
+#find_package(hello-imgui CONFIG REQUIRED)
+#if find_package, add   {"name": "hello-imgui", "features": [ "opengl3-binding", "sdl2-binding"] } to vcpkg.json
 if (EMSCRIPTEN)
 else()
 endif()

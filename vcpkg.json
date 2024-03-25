@@ -8,13 +8,6 @@
     },
     {
       "name": "sdl2"
-    },		
-    {
-      "name": "hello-imgui",
-      "features": [
-        "opengl3-binding",
-        "sdl2-binding"
-      ]
-    }		
+    }
   ]
 }
