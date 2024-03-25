@@ -46,7 +46,7 @@ option(${PROJECT_NAME_UPPER_UNDERSCORE}_FORCE_EXPORT_ALL  "Force exporting all s
 set(${PROJECT_NAME_UPPER_UNDERSCORE}_EMSCRIPTEN_WASM_EXCEPTION OFF)  #hello-imgui use exception
 
 #got by git clone https://github.com/pthom/hello_imgui.git
-add_subdirectory(hello_imgui)
+#add_subdirectory(hello_imgui)
 
 set(DATA_FILES
 #  ./assets/font/cour.ttf
