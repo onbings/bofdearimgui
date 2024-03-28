@@ -13,6 +13,7 @@
  * V 1.00  Dec 24 2023  Bernard HARMEL: onbings@gmail.com : Initial release
  */
 #pragma once
+#include <map>
 // You may use this file to debug, understand or extend Dear ImGui features but we don't provide any guarantee of forward compatibility.
 // To implement maths operators for ImVec2 (disabled by default to not conflict with using IM_VEC2_CLASS_EXTRA with your own math types+operators), use:
 #define IMGUI_DEFINE_MATH_OPERATORS
@@ -53,12 +54,12 @@ using Logger = std::function<void(const char *)>;
 
 struct BOF_IMGUI_PARAM
 {
-  std::string WindowTitle_S;  //Used also as user setting save and load op id
-  std::string MenuTitle_S; 
+  std::string WindowTitle_S; // Used also as user setting save and load op id
+  std::string MenuTitle_S;
   BOF::BOF_SIZE<uint32_t> Size_X;
-  std::string BackgroudHexaColor_S;  //if not set use V_CustomBackground callback
+  std::string BackgroudHexaColor_S; // if not set use V_CustomBackground callback
   uint32_t MonitorIndex_U32;
-  bool FullScreen_B; //Invalidate WindowTitle_S, Size_X, CenterWindow_B and Pos_X
+  bool FullScreen_B; // Invalidate WindowTitle_S, Size_X, CenterWindow_B and Pos_X
   bool CenterWindow_B;
   BOF::BOF_POINT_2D<int32_t> Pos_X;
 
@@ -90,7 +91,7 @@ struct BOF_IMGUI_PARAM
 struct BOF_IMGUI_FONT
 {
   std::string Name_S;
-  uint32_t Size_U32;  //To be multiplied by ImGui::GetIO().FontGlobalScale if needed
+  uint32_t Size_U32; // To be multiplied by ImGui::GetIO().FontGlobalScale if needed
   BOF_IMGUI_FONT()
   {
     Reset();
@@ -277,7 +278,7 @@ struct Bof_ImGui_ImTextCustomization
     return Rts_X;
   }
 };
-enum BOF_IMGUI_DOCKING_WINDOW :uint32_t
+enum BOF_IMGUI_DOCKING_WINDOW : uint32_t
 {
   BOF_IMGUI_DOCKING_WINDOW_LEFT = 0,
   BOF_IMGUI_DOCKING_WINDOW_RIGHT,
@@ -290,7 +291,7 @@ struct BOF_IMGUI_DOCKING_WINDOW_ENTRY
   std::string Name_S;
   float Ratio_f;
 
-  ImGuiID Id;   //internal, don't touch
+  ImGuiID Id; // internal, don't touch
   BOF_IMGUI_DOCKING_WINDOW_ENTRY()
   {
     Reset();
@@ -306,9 +307,9 @@ struct BOF_IMGUI_DOCKING_WINDOW_PARAM
 {
   std::array<BOF_IMGUI_DOCKING_WINDOW_ENTRY, BOF_IMGUI_DOCKING_WINDOW_MAX> ImguiDockingWindowCollection;
 
-  bool InitDone_B;//internal, don't touch
-  ImGuiDockNodeFlags DockspaceFlag;//internal, don't touch
-  ImGuiID DockSpaceId;//internal, don't touch
+  bool InitDone_B;                  // internal, don't touch
+  ImGuiDockNodeFlags DockspaceFlag; // internal, don't touch
+  ImGuiID DockSpaceId;              // internal, don't touch
 
   BOF_IMGUI_DOCKING_WINDOW_PARAM()
   {
@@ -322,6 +323,49 @@ struct BOF_IMGUI_DOCKING_WINDOW_PARAM
     DockSpaceId = 0;
   }
 };
+struct BOF_IMGUI_KEY
+{
+  bool Alt_B;
+  bool Ctrl_B;
+  bool Shift_B;
+  std::string Key_S; // From S_pKeyNameCollection_c
+
+  BOF_IMGUI_KEY()
+  {
+    Reset();
+  }
+  void Reset()
+  {
+    Alt_B = false;
+    Ctrl_B = false;
+    Shift_B = false;
+    Key_S = "";
+  }
+};
+
+using BOF_IMGUI_KEY_ACTION_CALLBACK = std::function<void(const BOF_IMGUI_KEY &_rActionKey_X, void *_pUser)>;
+constexpr uint32_t BOF_IMGUI_MOD_ALT_FLAG = 0x80000000;
+constexpr uint32_t BOF_IMGUI_MOD_CTRL_FLAG = 0x40000000;
+constexpr uint32_t BOF_IMGUI_MOD_SHIFT_FLAG = 0x20000000;
+constexpr uint32_t BOF_IMGUI_MOD_MASK = (BOF_IMGUI_MOD_ALT_FLAG | BOF_IMGUI_MOD_CTRL_FLAG | BOF_IMGUI_MOD_SHIFT_FLAG);
+
+struct BOF_IMGUI_KEY_ACTION_CALLBACK_PARAM
+{
+  BOF_IMGUI_KEY_ACTION_CALLBACK KeyActionCallback;
+  BOF_IMGUI_KEY Key_X;
+  void *pUser;
+  BOF_IMGUI_KEY_ACTION_CALLBACK_PARAM()
+  {
+    Reset();
+  }
+  void Reset()
+  {
+    KeyActionCallback = nullptr;
+    Key_X.Reset();
+    pUser = nullptr;
+  }
+};
+
 class Bof_ImGui
 {
 public:
@@ -335,18 +379,22 @@ public:
   std::vector<BOF_IMGUI_FONT> GetFontList();
   ImFont *GetFont(uint32_t _FontIndex_U32);
   ImFont *LoadFont(const char *_pFontFileTtf_c, uint32_t _FontSizeInPixel_U32);
-  static bool S_HexaColor(const std::string &_rHexaColor_S, uint8_t(&_rColor_U8)[4]); //#RRGGBB or #RRGGBBAA
   BOFERR PrepareDockedWindow(BOF_IMGUI_DOCKING_WINDOW_PARAM &_rDockingWindowParam_X);
   void *GetWindowBackendPointer();
   void ToggleFullscreenMode(bool _FullscreenModeOn_B);
   bool IsFullscreenModeOn();
+  bool RegisterKeyActionCallback(const BOF_IMGUI_KEY &_rActionKey_X, BOF_IMGUI_KEY_ACTION_CALLBACK _KeyActionCallback, void *_pUser);
+
+  static std::string S_GetKeyboardState();
+  static uint32_t S_KeyToKeyCode(const std::string &_rKey_S);
+  static std::string Bof_ImGui::S_KeyToString(const BOF::BOF_IMGUI_KEY &_rKey_X);
+  static bool S_HexaColor(const std::string &_rHexaColor_S, uint8_t(&_rColor_U8)[4]); // #RRGGBB or #RRGGBBAA
+  static void S_BuildHelpMarker(const char *_pHelp_c);
 
 protected:
   virtual BOFERR V_ReadSettings() = 0;
   virtual BOFERR V_SaveSettings() = 0;
   virtual BOFERR V_RefreshGui() = 0;
-  static void S_BuildHelpMarker(const char *_pHelp_c);
-  virtual void V_OnKeyboardPress(char _Ch_c, const std::string &_rKeyState_S);
 
   virtual void V_SetupImGuiConfig();
   virtual void V_SetupImGuiStyle();
@@ -364,16 +412,20 @@ protected:
   virtual void V_BeforeExit();
   virtual void V_BeforeExit_PostCleanup();
   virtual void V_RegisterTests();
-  static std::string S_GetKeyboardState();
 
 private:
+#if 0
+protected  virtual void V_OnKeyboardPress(char _Ch_c, const std::string &_rKeyState_S);
+
+  bool PollWindowEvent();
   void HandleComputerKeyboard();
-  HelloImGui::RunnerParams mRunnerParam_X;
-#if defined(HELLOIMGUI_USE_SDL2)
-  void PollSdlEent(SDL_Window *_pWindow_X);
 #endif
+  BOFERR ShowDemoSelectorWindow();
+  BOFERR ShowDemoAnotherWindow();
+  BOFERR ShowDemoSpecialTextWindow();
 
 private:
+  HelloImGui::RunnerParams mRunnerParam_X;
   BOF_IMGUI_PARAM mImguiParam_X;
   BOFERR mLastError_E;
   bool mFullscreenModeOn_B = false;
@@ -384,10 +436,6 @@ private:
   ImVec4 mClearColor_X;
   float mClearColor_f = 0.0f;
   uint32_t mCounter_U32 = 0;
-
-
-  BOFERR ShowDemoSelectorWindow();
-  BOFERR ShowDemoAnotherWindow();
-  BOFERR ShowDemoSpecialTextWindow();
+  std::map<uint32_t, BOF_IMGUI_KEY_ACTION_CALLBACK_PARAM> mKeyActionCallbackCollection;
 };
 END_BOF_NAMESPACE()

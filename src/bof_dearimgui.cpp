@@ -15,13 +15,189 @@
 #include "bofdearimgui/bof_dearimgui.h"
 #include "bofdearimgui/bof_dearimgui_internal.h"
 #include <bofstd/bofstring.h>
+#include <imgui_impl_sdl2.h>
 
 #if defined(_WIN32)
 #include <ShellScalingApi.h>
 #endif
 
 BEGIN_BOF_NAMESPACE()
+// All text must be longer than 1 char to make a difference between "ScanCode" and "Symbol"
+// Comes from C:\pro\vcpkg\buildtrees\imgui\src\.2-docking-45311af7f2.clean\imgui.cpp static const char* const GKeyNames[] =
+static const char *const S_pKeyNameCollection_c[] =
+    {
+        "Tab", "LeftArrow", "RightArrow", "UpArrow", "DownArrow", "PageUp", "PageDown",
+        "Home", "End", "Insert", "Delete",
 
+        "Backspace", "Space", "Enter", "Escape",
+        "LeftCtrl", "LeftShift", "LeftAlt", "LeftSuper", "RightCtrl", "RightShift", "RightAlt", "RightSuper", "Menu",
+
+        "Key0", "Key1", "Key2", "Key3", "Key4", "Key5", "Key6", "Key7", "Key8", "Key9", "KeyA", "KeyB", "KeyC", "KeyD", "KeyE", "KeyF", "KeyG", "KeyH",
+        "KeyI", "KeyJ", "KeyK", "KeyL", "KeyM", "KeyN", "KeyO", "KeyP", "KeyQ", "KeyR", "KeyS", "KeyT", "KeyU", "KeyV", "KeyW", "KeyX", "KeyY", "KeyZ",
+        "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12",
+        "F13", "F14", "F15", "F16", "F17", "F18", "F19", "F20", "F21", "F22", "F23", "F24",
+
+        "Apostrophe", "Comma", "Minus", "Period", "Slash", "Semicolon", "Equal", "LeftBracket",
+        "Backslash", "RightBracket", "GraveAccent", "CapsLock", "ScrollLock", "NumLock", "PrintScreen",
+        "Pause", "Keypad0", "Keypad1", "Keypad2", "Keypad3", "Keypad4", "Keypad5", "Keypad6",
+        "Keypad7", "Keypad8", "Keypad9", "KeypadDecimal", "KeypadDivide", "KeypadMultiply",
+        "KeypadSubtract", "KeypadAdd", "KeypadEnter", "KeypadEqual"
+        /*
+        "AppBack", "AppForward",
+        "GamepadStart", "GamepadBack",
+        "GamepadFaceLeft", "GamepadFaceRight", "GamepadFaceUp", "GamepadFaceDown",
+        "GamepadDpadLeft", "GamepadDpadRight", "GamepadDpadUp", "GamepadDpadDown",
+        "GamepadL1", "GamepadR1", "GamepadL2", "GamepadR2", "GamepadL3", "GamepadR3",
+        "GamepadLStickLeft", "GamepadLStickRight", "GamepadLStickUp", "GamepadLStickDown",
+        "GamepadRStickLeft", "GamepadRStickRight", "GamepadRStickUp", "GamepadRStickDown",
+        "MouseLeft", "MouseRight", "MouseMiddle", "MouseX1", "MouseX2", "MouseWheelX", "MouseWheelY",
+        "ModCtrl", "ModShift", "ModAlt", "ModSuper", // ReservedForModXXX are showing the ModXXX names.
+        */
+};
+
+std::string Bof_ImGui::S_GetKeyboardState()
+{
+  std::string Rts_S;
+  uint32_t i_U32;
+
+  for (i_U32 = ImGuiKey_Tab; i_U32 <= ImGuiKey_KeypadEqual; i_U32++)
+  {
+    if (ImGui::IsKeyPressed((ImGuiKey)i_U32, true))
+    {
+      Rts_S += (S_pKeyNameCollection_c[i_U32 - ImGuiKey_Tab] + ' ');
+      // printf("rts %s\n", Rts_S.c_str());
+    }
+  }
+  // char pKeyCombi_c[0x100];
+  // ImGui::GetKeyChordName(ImGuiKeyChord key_chord, pKeyCombi_c, sizeof(pKeyCombi_c));
+
+  return Rts_S;
+}
+uint32_t Bof_ImGui::S_KeyToKeyCode(const std::string &_rKey_S)
+{
+  uint32_t Rts_U32 = 0, i_U32;
+  std::istringstream Iss(_rKey_S);
+  std::vector<std::string> TokenCollection{std::istream_iterator<std::string>{Iss}, std::istream_iterator<std::string>{}};
+
+  auto &rLeftIt = std::find(TokenCollection.begin(), TokenCollection.end(), "LeftAlt");
+  if (rLeftIt != TokenCollection.end())
+  {
+    TokenCollection.erase(rLeftIt);
+    Rts_U32 |= BOF_IMGUI_MOD_ALT_FLAG;
+  }
+  auto &rRightIt = std::find(TokenCollection.begin(), TokenCollection.end(), "RightAlt");
+  if (rRightIt != TokenCollection.end())
+  {
+    TokenCollection.erase(rRightIt);
+    Rts_U32 |= BOF_IMGUI_MOD_ALT_FLAG;
+  }
+
+  rLeftIt = std::find(TokenCollection.begin(), TokenCollection.end(), "LeftCtrl");
+  if (rLeftIt != TokenCollection.end())
+  {
+    TokenCollection.erase(rLeftIt);
+    Rts_U32 |= BOF_IMGUI_MOD_CTRL_FLAG;
+  }
+  rRightIt = std::find(TokenCollection.begin(), TokenCollection.end(), "RightCtrl");
+  if (rRightIt != TokenCollection.end())
+  {
+    TokenCollection.erase(rRightIt);
+    Rts_U32 |= BOF_IMGUI_MOD_CTRL_FLAG;
+  }
+
+  rLeftIt = std::find(TokenCollection.begin(), TokenCollection.end(), "LeftShift");
+  if (rLeftIt != TokenCollection.end())
+  {
+    TokenCollection.erase(rLeftIt);
+    Rts_U32 |= BOF_IMGUI_MOD_SHIFT_FLAG;
+  }
+  rRightIt = std::find(TokenCollection.begin(), TokenCollection.end(), "RightShift");
+  if (rRightIt != TokenCollection.end())
+  {
+    TokenCollection.erase(rRightIt);
+    Rts_U32 |= BOF_IMGUI_MOD_SHIFT_FLAG;
+  }
+
+  if (TokenCollection.size() == 1)
+  {
+    if (TokenCollection[0].size() == 1)
+    {
+      // Symbol
+      Rts_U32 |= (char)TokenCollection[0][0];
+    }
+    else
+    {
+      // Scan code such as F11 or PageDown
+      for (i_U32 = 0; i_U32 <= (ImGuiKey_KeypadEqual - ImGuiKey_Tab); i_U32++)
+      {
+        if (!strcmp(S_pKeyNameCollection_c[i_U32], TokenCollection[0].c_str()))
+        {
+          Rts_U32 |= (ImGuiKey_Tab + i_U32);
+          break;
+        }
+      }
+    }
+  }
+  return Rts_U32;
+}
+std::string Bof_ImGui::S_KeyToString(const BOF::BOF_IMGUI_KEY &_rKey_X)
+{
+  std::string Rts_S;
+
+  if (_rKey_X.Shift_B)
+  {
+    Rts_S += "LeftShift ";
+  }
+  if (_rKey_X.Ctrl_B)
+  {
+    Rts_S += "LeftCtrl ";
+  }
+  if (_rKey_X.Alt_B)
+  {
+    Rts_S += "LeftAlt ";
+  }
+  Rts_S += _rKey_X.Key_S;
+  return Rts_S;
+}
+bool Bof_ImGui::S_HexaColor(const std::string &_rHexaColor_S, uint8_t (&_rColor_U8)[4])
+{
+  bool Rts_B = false;
+  uint32_t Rgba_U32;
+
+  if (_rHexaColor_S[0] == '#')
+  {
+    if (_rHexaColor_S.size() == (1 + 6))
+    {
+      Rgba_U32 = (uint32_t)BOF::Bof_StrToBin(16, _rHexaColor_S.substr(1).c_str());
+      _rColor_U8[0] = (uint8_t)(Rgba_U32 >> 16);
+      _rColor_U8[1] = (uint8_t)(Rgba_U32 >> 8);
+      _rColor_U8[2] = (uint8_t)(Rgba_U32);
+      _rColor_U8[3] = 255;
+      Rts_B = true;
+    }
+    else if (_rHexaColor_S.size() == (1 + 8))
+    {
+      Rgba_U32 = (uint32_t)BOF::Bof_StrToBin(16, _rHexaColor_S.substr(1).c_str());
+      _rColor_U8[0] = (uint8_t)(Rgba_U32 >> 24);
+      _rColor_U8[1] = (uint8_t)(Rgba_U32 >> 16);
+      _rColor_U8[2] = (uint8_t)(Rgba_U32 >> 8);
+      _rColor_U8[3] = (uint8_t)(Rgba_U32);
+      Rts_B = true;
+    }
+  }
+  return Rts_B;
+}
+void Bof_ImGui::S_BuildHelpMarker(const char *_pHelp_c)
+{
+  ImGui::TextDisabled("(?)");
+  if (ImGui::BeginItemTooltip())
+  {
+    ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+    ImGui::TextUnformatted(_pHelp_c);
+    ImGui::PopTextWrapPos();
+    ImGui::EndTooltip();
+  }
+}
 void LogHelper(Logger &_rLogFunction, const char *_pFormat_c, ...)
 {
   char pBuffer_c[0x1000];
@@ -50,17 +226,7 @@ Bof_ImGui::Bof_ImGui(const BOF_IMGUI_PARAM &_rImguiParam_X)
 Bof_ImGui::~Bof_ImGui()
 {
 }
-void Bof_ImGui::S_BuildHelpMarker(const char *_pHelp_c)
-{
-  ImGui::TextDisabled("(?)");
-  if (ImGui::BeginItemTooltip())
-  {
-    ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
-    ImGui::TextUnformatted(_pHelp_c);
-    ImGui::PopTextWrapPos();
-    ImGui::EndTooltip();
-  }
-}
+
 // BOFERR Bof_ImGui::DisplayText(const char *_pTextStart_c, const char *_pTextEnd_c, bool _Wrapped_B, bool _Disabled_B, const Bof_ImGui_ImTextCustomization *_pTextCustomization_X)
 BOFERR Bof_ImGui::DisplayText(const char *_pText_c, bool _Wrapped_B, bool _Disabled_B, const Bof_ImGui_ImTextCustomization *_pTextCustomization_X)
 {
@@ -182,37 +348,6 @@ BOFERR Bof_ImGui::PrepareDockedWindow(BOF_IMGUI_DOCKING_WINDOW_PARAM &_rDockingW
   return Rts_E;
 }
 
-std::string Bof_ImGui::S_GetKeyboardState()
-{
-  std::string Rts_S;
-
-  uint32_t i_U32;
-  static const char *S_pKeyNameCollection_c[] = {
-      "Tab ", "Left ", "Right ", "Up ", "Down ", "PgUp ", "PgDown ", "Home ", "End ", "Ins ", "Del ",
-      "Back ", "Space ", "Enter ", "Esc ", "LCtrl ", "LShift ", "LAlt ", "LSup ", "RCtrl ", "RShift ", "RAlt ", "RSup ", "Menu ",
-      "0 ", "1 ", "2 ", "3 ", "4 ", "5 ", "6 ", "7 ", "8 ", "9 ",
-      "A ", "B ", "C ", "D ", "E ", "F ", "G ", "H ", "I ", "J ",
-      "K ", "L ", "M ", "N ", "O ", "P ", "Q ", "R ", "S ", "T ",
-      "U ", "V ", "W ", "X ", "Y ", "Z ",
-      "F1 ", "F2 ", "F3 ", "F4 ", "F5 ", "F6 ", "F7 ", "F8 ", "F9 ", "F10 ",
-      "F11 ", "F12 ", "F13 ", "F14 ", "F15 ", "F16 ", "F17 ", "F18 ", "F19 ", "F20 ",
-      "F21 ", "F22 ", "F23 ", "F24 ",
-      "' ", ", ", "- ", ". ", "/ ", "; ", "= ", "[ ", "\\ ", "] ", "` ", "Caps ", "Lock", "Num ", "Prt ", "Hold ",
-      "N0 ", "N1 ", "N2 ", "N3 ", "N4 ", "N5 ", "N6 ", "N7 ", "N8 ", "N9 ",
-      "N. ", "N/ ", "N* ", "N- ", "N+ ", "NEnter ", "N= "};
-  for (i_U32 = ImGuiKey_Tab; i_U32 <= ImGuiKey_KeypadEqual; i_U32++)
-  {
-    if (ImGui::IsKeyPressed((ImGuiKey)i_U32, true))
-    {
-      Rts_S += S_pKeyNameCollection_c[i_U32 - ImGuiKey_Tab];
-      // printf("rts %s\n", Rts_S.c_str());
-    }
-  }
-  // char pKeyCombi_c[0x100];
-  // ImGui::GetKeyChordName(ImGuiKeyChord key_chord, pKeyCombi_c, sizeof(pKeyCombi_c));
-
-  return Rts_S;
-}
 void MyGui()
 {
   ImGui::Text("Hello, world");
@@ -293,12 +428,12 @@ BOFERR Bof_ImGui::MainLoop()
     if (mImguiParam_X.FullScreen_B)
     {
       mFullscreenModeOn_B = true;
-//Ok and fast but limitted to current desktop res
+      // Ok and fast but limitted to current desktop res
       mRunnerParam_X.appWindowParams.windowGeometry.fullScreenMode = HelloImGui::FullScreenMode::FullScreenDesktopResolution;
-//Ok but takes sometime when switching between windowed and fullscreen mode
-//      mRunnerParam_X.appWindowParams.windowGeometry.fullScreenMode = HelloImGui::FullScreenMode::FullScreen; // Ok
-// No Title but no real full screen, just a window with no title which takes all the space->no move no resize
-      //mRunnerParam_X.appWindowParams.windowGeometry.fullScreenMode = HelloImGui::FullScreenMode::FullMonitorWorkArea;
+      // Ok but takes sometime when switching between windowed and fullscreen mode
+      //       mRunnerParam_X.appWindowParams.windowGeometry.fullScreenMode = HelloImGui::FullScreenMode::FullScreen; // Ok
+      //  No Title but no real full screen, just a window with no title which takes all the space->no move no resize
+      // mRunnerParam_X.appWindowParams.windowGeometry.fullScreenMode = HelloImGui::FullScreenMode::FullMonitorWorkArea;
     }
     else
     {
@@ -381,7 +516,9 @@ BOFERR Bof_ImGui::MainLoop()
     mRunnerParam_X.iniFilename_useAppWindowTitle = true;
     mRunnerParam_X.appShallExit = false;
     mRunnerParam_X.fpsIdling.enableIdling = true;
-    //  mRunnerParam_X.dpiAwareParams
+    mRunnerParam_X.dpiAwareParams.dpiWindowSizeFactor = 0.0f;
+    mRunnerParam_X.dpiAwareParams.fontRenderingScale = 0.0f;
+    //mRunnerParam_X.dpiAwareParams.dpiWindowSizeFactor. = 0.5f;
     mRunnerParam_X.emscripten_fps = 0;
     mRunnerParam_X.useImGuiTestEngine = false;
 
@@ -425,6 +562,58 @@ bool Bof_ImGui::IsFullscreenModeOn()
 {
   return mFullscreenModeOn_B;
 }
+bool Bof_ImGui::RegisterKeyActionCallback(const BOF_IMGUI_KEY &_rActionKey_X, BOF_IMGUI_KEY_ACTION_CALLBACK _KeyActionCallback, void *_pUser)
+{
+  bool Rts_B = false;
+  uint32_t i_U32, KeyCode_U32;
+  BOF_IMGUI_KEY_ACTION_CALLBACK_PARAM KeyActionCallbackParam_X;
+  bool KeyCodeOk_B = false;
+
+  if (_rActionKey_X.Key_S.size() == 1)
+  {
+    // Symbol
+    KeyCodeOk_B = true;
+    KeyCode_U32 = (char)_rActionKey_X.Key_S[0];
+  }
+  else
+  {
+    // Scan code such as F11 or PageDown
+    // for (i_U32 = ImGuiKey_Tab; i_U32 <= ImGuiKey_KeypadEqual; i_U32++)
+    for (i_U32 = 0; i_U32 <= (ImGuiKey_KeypadEqual - ImGuiKey_Tab); i_U32++)
+    {
+      if (!strcmp(S_pKeyNameCollection_c[i_U32], _rActionKey_X.Key_S.c_str()))
+      {
+        KeyCodeOk_B = true;
+        KeyCode_U32 = (ImGuiKey_Tab + i_U32);
+        break;
+      }
+    }
+  }
+  if (KeyCodeOk_B)
+  {
+    if (_rActionKey_X.Alt_B)
+    {
+      KeyCode_U32 |= BOF_IMGUI_MOD_ALT_FLAG;
+    }
+    if (_rActionKey_X.Ctrl_B)
+    {
+      KeyCode_U32 |= BOF_IMGUI_MOD_CTRL_FLAG;
+    }
+    if (_rActionKey_X.Shift_B)
+    {
+      KeyCode_U32 |= BOF_IMGUI_MOD_SHIFT_FLAG;
+    }
+    // If item already exist it will be overwritten->can be reset to nullptr
+    // if (mMenuShortcutCollection.find(_pShortcut_c) == mMenuShortcutCollection.end())
+    KeyActionCallbackParam_X.KeyActionCallback = _KeyActionCallback;
+    KeyActionCallbackParam_X.Key_X = _rActionKey_X;
+    KeyActionCallbackParam_X.pUser = _pUser;
+    mKeyActionCallbackCollection[KeyCode_U32] = KeyActionCallbackParam_X;
+    Rts_B = true;
+  }
+  return Rts_B;
+}
+
 BOFERR Bof_ImGui::SetCursorPos(int32_t _x_S32, int32_t _y_S32)
 {
   BOFERR Rts_E = mLastError_E;
@@ -486,34 +675,35 @@ ImFont *Bof_ImGui::LoadFont(const char *_pFontFileTtf_c, uint32_t _FontSizeInPix
   return pRts;
 }
 
-bool Bof_ImGui::S_HexaColor(const std::string &_rHexaColor_S, uint8_t (&_rColor_U8)[4])
+#if 0
+bool Bof_ImGui::PollWindowEvent()
 {
-  bool Rts_B = false;
-  uint32_t Rgba_U32;
+  bool Rts_B = true;
+#if defined(HELLOIMGUI_USE_SDL2)
+  SDL_Event Event_X;
+  //SDL_Window *pWindow_X
 
-  if (_rHexaColor_S[0] == '#')
+  while (SDL_PollEvent(&Event_X))
   {
-    if (_rHexaColor_S.size() == (1 + 6))
+    if (ImGui_ImplSDL2_ProcessEvent(&Event_X))
     {
-      Rgba_U32 = (uint32_t)BOF::Bof_StrToBin(16, _rHexaColor_S.substr(1).c_str());
-      _rColor_U8[0] = (uint8_t)(Rgba_U32 >> 16);
-      _rColor_U8[1] = (uint8_t)(Rgba_U32 >> 8);
-      _rColor_U8[2] = (uint8_t)(Rgba_U32);
-      _rColor_U8[3] = 255;
-      Rts_B = true;
-    }
-    else if (_rHexaColor_S.size() == (1 + 8))
-    {
-      Rgba_U32 = (uint32_t)BOF::Bof_StrToBin(16, _rHexaColor_S.substr(1).c_str());
-      _rColor_U8[0] = (uint8_t)(Rgba_U32 >> 24);
-      _rColor_U8[1] = (uint8_t)(Rgba_U32 >> 16);
-      _rColor_U8[2] = (uint8_t)(Rgba_U32 >> 8);
-      _rColor_U8[3] = (uint8_t)(Rgba_U32);
-      Rts_B = true;
+      if (Event_X.type == SDL_QUIT)
+      {
+        Rts_B = false;
+        //SDL_DestroyWindow(_pWindow_X);
+        //SDL_Quit();
+      }
+      else
+      {
+        HandleComputerKeyboard();
+      }
     }
   }
+#endif
+
   return Rts_B;
 }
+
 void Bof_ImGui::HandleComputerKeyboard()
 {
   uint32_t i_U32;
@@ -556,6 +746,7 @@ void Bof_ImGui::V_OnKeyboardPress(char _Ch_c, const std::string &_rKeyState_S)
 {
   DBG_LOG("V_OnKeyboardPress ch %02X St %s\n", _Ch_c, _rKeyState_S.c_str());
 }
+#endif
 
 void Bof_ImGui::V_SetupImGuiConfig()
 {
@@ -603,9 +794,77 @@ void Bof_ImGui::V_ShowStatus()
 }
 void Bof_ImGui::V_ShowGui()
 {
+  uint32_t KeyMod_U32, Key_U32, KeyWithoutMod_U32;
+  bool KeyActionCallbackFound_B, ScanCodeMode_B;
+
   // DBG_LOG("V_ShowGui\n", 0);
   //  HandleComputerKeyboard();
 
+  if (!(ImGui::IsAnyItemFocused()) && !(ImGui::IsAnyItemActive()))
+  {
+    KeyMod_U32 = 0;
+    KeyActionCallbackFound_B = false;
+    if (ImGui::GetIO().KeyAlt) // if (ImGui::IsKeyPressed(ImGuiKey_LeftAlt) || ImGui::IsKeyPressed(ImGuiKey_RightAlt))
+    {
+      KeyMod_U32 |= BOF::BOF_IMGUI_MOD_ALT_FLAG;
+    }
+    if (ImGui::GetIO().KeyCtrl) // if (ImGui::IsKeyPressed(ImGuiKey_LeftCtrl) || ImGui::IsKeyPressed(ImGuiKey_RightCtrl))
+    {
+      KeyMod_U32 |= BOF::BOF_IMGUI_MOD_CTRL_FLAG;
+    }
+    if (ImGui::GetIO().KeyShift) // if (ImGui::IsKeyPressed(ImGuiKey_LeftShift) || ImGui::IsKeyPressed(ImGuiKey_RightShift))
+    {
+      KeyMod_U32 |= BOF::BOF_IMGUI_MOD_SHIFT_FLAG;
+    }
+    // Read back characters from ImGui's input buffer
+    if (ImGui::GetIO().InputQueueCharacters.Size) // Symbol->NOT Scan code such as F11 or PageDown
+    {
+      // Invalidate BOF_IMGUI_MOD_SHIFT_FLAG as ? is a symbol which is got using shift but in mKeyActionCallbackCollection it is not set (depends on keyboard layout)
+      KeyMod_U32 &= (0xFFFFFFFF ^ BOF::BOF_IMGUI_MOD_SHIFT_FLAG);
+      // for (i_U32 = 0; i_U32 < ImGui::GetIO().InputQueueCharacters.Size; i_U32++)
+      // Get the first in the queue, the next one will be read at nex iteration of the main loop if needed
+      Key_U32 = ImGui::GetIO().InputQueueCharacters[0];
+      ScanCodeMode_B = false;
+    }
+    else
+    {
+      // Scan code such as F11 or PageDown
+      ScanCodeMode_B = true;
+    }
+    for (auto &rIt : mKeyActionCallbackCollection)
+    {
+      if (rIt.second.KeyActionCallback)
+      { 
+        KeyWithoutMod_U32 = rIt.first & (0xFFFFFFFF ^ BOF_IMGUI_MOD_MASK);
+        if (ScanCodeMode_B)
+        {
+          if (KeyWithoutMod_U32 >= ImGuiKey_NamedKey_BEGIN)
+          {
+            Key_U32 = rIt.first & (0xFFFFFFFF ^ BOF_IMGUI_MOD_MASK);
+            if (ImGui::IsKeyPressed((ImGuiKey)(Key_U32))) // ImGuiKey_Space))
+            {
+              KeyActionCallbackFound_B = true;
+            }
+          }
+        }
+        else
+        {
+          if (KeyWithoutMod_U32 < ImGuiKey_NamedKey_BEGIN)
+          {
+            if (rIt.first == (KeyMod_U32 | Key_U32))
+            {
+              KeyActionCallbackFound_B = true;
+            }
+          }
+        }
+        if (KeyActionCallbackFound_B)
+        {
+          rIt.second.KeyActionCallback(rIt.second.Key_X, rIt.second.pUser);
+          break;
+        }
+      }
+    }
+  }
   // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
   if (mImguiParam_X.ShowDemoWindow_B)
   {
@@ -627,35 +886,44 @@ void Bof_ImGui::V_AfterSwap()
 {
   // DBG_LOG("V_AfterSwap\n", 0);
 }
-#if defined(HELLOIMGUI_USE_SDL2)
-void Bof_ImGui::PollSdlEent(SDL_Window *_pWindow_X)
-{
-  SDL_Event Event_X;
-  while (SDL_PollEvent(&event))
-  {
-    ImGui_ImplSDL2_ProcessEvent(&event);
-    if (event.type == SDL_QUIT)
-    {
-      SDL_DestroyWindow(window);
-      SDL_Quit();
-      exit(0);
-    }
-  }
-}
-#endif
-
 
 bool Bof_ImGui::V_AnyBackendEventCallback(void *_pEvent)
 {
   bool Rts_B = false; // By default let's the system handle events
 #if defined(HELLOIMGUI_USE_SDL2)
-#if 0
+#if 1
   SDL_Event *pEvent_X = (SDL_Event *)_pEvent;
-  // DBG_LOG("V_AnyBackendEventCallback %p\n", pEvent_X);
+  // DBG_LOG("V_AnyBackendEventCallback %p type %d\n", pEvent_X, pEvent_X ? pEvent_X->type:0);
   if (pEvent_X)
   {
     switch (pEvent_X->type)
     {
+      /*
+      case SDL_KEYDOWN:
+        DBG_LOG("SDL_KEYDOWN event - Keycode: %d\n", pEvent_X->key.keysym.sym);
+        break;
+        // Add cases for other SDL keyboard events
+      case SDL_KEYUP:
+        DBG_LOG("SDL_KEYUP event - Keycode: %d\n", pEvent_X->key.keysym.sym);
+        break;
+        // Add cases for other SDL keyboard events
+      case SDL_TEXTEDITING:
+        DBG_LOG("SDL_TEXTEDITING event\n", 0);
+        break;
+        // Add cases for other SDL text editing events
+      case SDL_TEXTINPUT:
+        DBG_LOG("SDL_TEXTINPUT event\n", 0);
+        break;
+        // Add cases for other SDL text input events
+      case SDL_KEYMAPCHANGED:
+        DBG_LOG("SDL_KEYMAPCHANGED event\n", 0);
+        break;
+        // Add cases for other SDL keymap changed events
+      case SDL_TEXTEDITING_EXT:
+        DBG_LOG("SDL_TEXTEDITING_EXT event\n", 0);
+        break;
+        */
+      /*
       case SDL_QUIT:
         DBG_LOG("SDL_QUIT event\n", 0);
         break;
@@ -705,29 +973,8 @@ bool Bof_ImGui::V_AnyBackendEventCallback(void *_pEvent)
       case SDL_SYSWMEVENT:
         DBG_LOG("SDL_SYSWMEVENT event\n", 0);
         break;
-      case SDL_KEYDOWN:
-        DBG_LOG("SDL_KEYDOWN event - Keycode: %d\n", pEvent_X->key.keysym.sym);
-        break;
-      // Add cases for other SDL keyboard events
-      case SDL_KEYUP:
-        DBG_LOG("SDL_KEYUP event - Keycode: %d\n", pEvent_X->key.keysym.sym);
-        break;
-      // Add cases for other SDL keyboard events
-      case SDL_TEXTEDITING:
-        DBG_LOG("SDL_TEXTEDITING event\n", 0);
-        break;
-      // Add cases for other SDL text editing events
-      case SDL_TEXTINPUT:
-        DBG_LOG("SDL_TEXTINPUT event\n", 0);
-        break;
-      // Add cases for other SDL text input events
-      case SDL_KEYMAPCHANGED:
-        DBG_LOG("SDL_KEYMAPCHANGED event\n", 0);
-        break;
-      // Add cases for other SDL keymap changed events
-      case SDL_TEXTEDITING_EXT:
-        DBG_LOG("SDL_TEXTEDITING_EXT event\n", 0);
-        break;
+
+
       // Add cases for other SDL extended text editing events
       case SDL_MOUSEMOTION:
         DBG_LOG("SDL_MOUSEMOTION event\n", 0);
@@ -896,11 +1143,12 @@ bool Bof_ImGui::V_AnyBackendEventCallback(void *_pEvent)
       default:
         DBG_LOG("Unhandled SDL_Event type: %d\n", pEvent_X->type);
         break;
+*/
     }
   }
   else
   {
-    //DBG_LOG("AnyBackendEventCallback with nullptr\n", 0);
+    // DBG_LOG("AnyBackendEventCallback with nullptr\n", 0);
   }
 #endif
 #else
