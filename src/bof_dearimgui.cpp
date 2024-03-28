@@ -627,6 +627,24 @@ void Bof_ImGui::V_AfterSwap()
 {
   // DBG_LOG("V_AfterSwap\n", 0);
 }
+#if defined(HELLOIMGUI_USE_SDL2)
+void Bof_ImGui::PollSdlEent(SDL_Window *_pWindow_X)
+{
+  SDL_Event Event_X;
+  while (SDL_PollEvent(&event))
+  {
+    ImGui_ImplSDL2_ProcessEvent(&event);
+    if (event.type == SDL_QUIT)
+    {
+      SDL_DestroyWindow(window);
+      SDL_Quit();
+      exit(0);
+    }
+  }
+}
+#endif
+
+
 bool Bof_ImGui::V_AnyBackendEventCallback(void *_pEvent)
 {
   bool Rts_B = false; // By default let's the system handle events

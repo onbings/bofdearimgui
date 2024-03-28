@@ -369,6 +369,9 @@ protected:
 private:
   void HandleComputerKeyboard();
   HelloImGui::RunnerParams mRunnerParam_X;
+#if defined(HELLOIMGUI_USE_SDL2)
+  void PollSdlEent(SDL_Window *_pWindow_X);
+#endif
 
 private:
   BOF_IMGUI_PARAM mImguiParam_X;
