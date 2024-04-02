@@ -38,8 +38,9 @@ target_include_directories(${UT_NAME}
 target_link_libraries(${UT_NAME}
   PRIVATE
     ONBINGS::bofdearimgui
-	#vcpkg GTest::GTest
-	GTest::gtest_main
+	#vcpkg 
+    GTest::GTest
+	#Fetch GTest::gtest_main
     ONBINGS::bofstd
 )
 
