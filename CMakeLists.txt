@@ -18,7 +18,7 @@
 #Select VcRun::WebNode::ut_bofdearimgui in debug icon
 
 #Windows build
-#cmake -DCMAKE_INSTALL_PREFIX=C:/bld/evs-xts-win/binaries -DCMAKE_TOOLCHAIN_FILE=C:/pro/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-windows-static -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Debug -SC:/pro/evs-xts/bofdearimgui -BC:/bld/bofdearimgui-win
+#cmake -DCMAKE_INSTALL_PREFIX=C:/bld/evs-hwfw-xts-win/binaries -DCMAKE_TOOLCHAIN_FILE=C:/pro/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-windows-static -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Debug -SC:/pro/evs-hwfw-xts/bofdearimgui -BC:/bld/bofdearimgui-win
 
 #Linux build
 #cmake -DCMAKE_INSTALL_PREFIX=/home/bha/bld/evs-xts-lin/binaries -DCMAKE_TOOLCHAIN_FILE=/home/bha/pro/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-linux -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Debug -S/home/bha/pro/evs-xts/bofdearimgui -B/home/bha/bld/bofdearimgui-lin
@@ -105,13 +105,12 @@ endif()
 # depend on pthread lib. These one are get using the fetch_vcpkg_library function as
 # they must be built with a strict control of options which is not possible with vcpkg 
 # build in manifest mode 
-SET (INSTALL_GTEST OFF)
 message("==========================Start fetch for ${PROJECT_NAME}=========================")
-#fetch_external_library_add(googletest "${LIST_OF_LIB}" https://github.com/google/googletest release-1.12.1)
-#make_external_library_available("${LIST_OF_LIB}")
+fetch_external_library_add(googletest "${LIST_OF_LIB}" https://github.com/google/googletest release-1.12.1)
+make_external_library_available("${LIST_OF_LIB}")
 message("==========================End fetch for ${PROJECT_NAME}===========================")
-#set_target_properties(gtest PROPERTIES MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
-#set_target_properties(gtest_main PROPERTIES MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+set_target_properties(gtest PROPERTIES MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+set_target_properties(gtest_main PROPERTIES MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
 include(cmake/export_version.cmake)
 include(cmake/install.cmake)

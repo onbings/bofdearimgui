@@ -17,7 +17,6 @@ endmacro()
 # == OPTIONAL DEPENDENCIES ==
 
 # == REQUIRED DEPENDENCIES ==
-find_package(gtest CONFIG REQUIRED)
 find_package(bofstd CONFIG REQUIRED)
 find_package(SDL2 CONFIG REQUIRED)
 find_package(hello-imgui CONFIG REQUIRED)
