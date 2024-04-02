@@ -4,6 +4,9 @@
   "description": "The OnBings DearImGui c++ wrapper library",
   "dependencies": [
     {
+      "name": "gtest"
+    },
+    {
       "name": "bofstd"
     },
     {
@@ -12,6 +15,6 @@
     },
     {
       "name": "sdl2"
-    }		
+    }
   ]
 }
