@@ -17,7 +17,7 @@
 #include <bofdearimgui/bof_dearimgui.h>
 #include "hello_imgui/hello_imgui.h"
 
-class ut_imgui : public ::testing::Test
+class bofdearimgui_tests : public ::testing::Test
 {
 protected:
   void SetUp() override
@@ -37,7 +37,7 @@ void RefreshGui()
   ImGui::ShowDemoWindow();
 }
 
-TEST_F(ut_imgui, ShowImgui)
+TEST_F(bofdearimgui_tests, ShowImgui)
 {
   HelloImGui::RunnerParams RunnerParam_X;
   RunnerParam_X.callbacks.ShowGui = RefreshGui;
@@ -45,3 +45,7 @@ TEST_F(ut_imgui, ShowImgui)
   //HelloImGui::Run([&]() { ImGui::Text("Hello, world!"); ImGui::ShowDemoWindow(); });
 }
 */
+TEST_F(bofdearimgui_tests, Test)
+{
+  EXPECT_TRUE(true);
+}
