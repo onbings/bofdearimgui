@@ -21,7 +21,7 @@ else()
 endif()
 
 # Create target
-set (UT_NAME ut_imgui)
+set (UT_NAME bofdearimgui-tests)
 add_executable(${UT_NAME}
 #hello_imgui_add_app(${UT_NAME} 
   ${SOURCES_FILES}
