@@ -12,10 +12,12 @@
  *
  * V 1.00  Dec 24 2023  Bernard HARMEL: onbings@gmail.com : Initial release
  */
+ //!!! In this order !!! #error Please '#define IMGUI_DEFINE_MATH_OPERATORS' _BEFORE_ including imgui.h!
 #include "bofdearimgui/bof_dearimgui.h"
 #include "bofdearimgui/bof_dearimgui_internal.h"
 #include <bofstd/bofstring.h>
 #include <imgui_impl_sdl2.h>
+#include <iterator>
 
 #if defined(_WIN32)
 #include <ShellScalingApi.h>
@@ -25,34 +27,34 @@ BEGIN_BOF_NAMESPACE()
 // All text must be longer than 1 char to make a difference between "ScanCode" and "Symbol"
 // Comes from C:\pro\vcpkg\buildtrees\imgui\src\.2-docking-45311af7f2.clean\imgui.cpp static const char* const GKeyNames[] =
 static const char *const S_pKeyNameCollection_c[] =
-    {
-        "Tab", "LeftArrow", "RightArrow", "UpArrow", "DownArrow", "PageUp", "PageDown",
-        "Home", "End", "Insert", "Delete",
+{
+    "Tab", "LeftArrow", "RightArrow", "UpArrow", "DownArrow", "PageUp", "PageDown",
+    "Home", "End", "Insert", "Delete",
 
-        "Backspace", "Space", "Enter", "Escape",
-        "LeftCtrl", "LeftShift", "LeftAlt", "LeftSuper", "RightCtrl", "RightShift", "RightAlt", "RightSuper", "Menu",
+    "Backspace", "Space", "Enter", "Escape",
+    "LeftCtrl", "LeftShift", "LeftAlt", "LeftSuper", "RightCtrl", "RightShift", "RightAlt", "RightSuper", "Menu",
 
-        "Key0", "Key1", "Key2", "Key3", "Key4", "Key5", "Key6", "Key7", "Key8", "Key9", "KeyA", "KeyB", "KeyC", "KeyD", "KeyE", "KeyF", "KeyG", "KeyH",
-        "KeyI", "KeyJ", "KeyK", "KeyL", "KeyM", "KeyN", "KeyO", "KeyP", "KeyQ", "KeyR", "KeyS", "KeyT", "KeyU", "KeyV", "KeyW", "KeyX", "KeyY", "KeyZ",
-        "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12",
-        "F13", "F14", "F15", "F16", "F17", "F18", "F19", "F20", "F21", "F22", "F23", "F24",
+    "Key0", "Key1", "Key2", "Key3", "Key4", "Key5", "Key6", "Key7", "Key8", "Key9", "KeyA", "KeyB", "KeyC", "KeyD", "KeyE", "KeyF", "KeyG", "KeyH",
+    "KeyI", "KeyJ", "KeyK", "KeyL", "KeyM", "KeyN", "KeyO", "KeyP", "KeyQ", "KeyR", "KeyS", "KeyT", "KeyU", "KeyV", "KeyW", "KeyX", "KeyY", "KeyZ",
+    "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12",
+    "F13", "F14", "F15", "F16", "F17", "F18", "F19", "F20", "F21", "F22", "F23", "F24",
 
-        "Apostrophe", "Comma", "Minus", "Period", "Slash", "Semicolon", "Equal", "LeftBracket",
-        "Backslash", "RightBracket", "GraveAccent", "CapsLock", "ScrollLock", "NumLock", "PrintScreen",
-        "Pause", "Keypad0", "Keypad1", "Keypad2", "Keypad3", "Keypad4", "Keypad5", "Keypad6",
-        "Keypad7", "Keypad8", "Keypad9", "KeypadDecimal", "KeypadDivide", "KeypadMultiply",
-        "KeypadSubtract", "KeypadAdd", "KeypadEnter", "KeypadEqual"
-        /*
-        "AppBack", "AppForward",
-        "GamepadStart", "GamepadBack",
-        "GamepadFaceLeft", "GamepadFaceRight", "GamepadFaceUp", "GamepadFaceDown",
-        "GamepadDpadLeft", "GamepadDpadRight", "GamepadDpadUp", "GamepadDpadDown",
-        "GamepadL1", "GamepadR1", "GamepadL2", "GamepadR2", "GamepadL3", "GamepadR3",
-        "GamepadLStickLeft", "GamepadLStickRight", "GamepadLStickUp", "GamepadLStickDown",
-        "GamepadRStickLeft", "GamepadRStickRight", "GamepadRStickUp", "GamepadRStickDown",
-        "MouseLeft", "MouseRight", "MouseMiddle", "MouseX1", "MouseX2", "MouseWheelX", "MouseWheelY",
-        "ModCtrl", "ModShift", "ModAlt", "ModSuper", // ReservedForModXXX are showing the ModXXX names.
-        */
+    "Apostrophe", "Comma", "Minus", "Period", "Slash", "Semicolon", "Equal", "LeftBracket",
+    "Backslash", "RightBracket", "GraveAccent", "CapsLock", "ScrollLock", "NumLock", "PrintScreen",
+    "Pause", "Keypad0", "Keypad1", "Keypad2", "Keypad3", "Keypad4", "Keypad5", "Keypad6",
+    "Keypad7", "Keypad8", "Keypad9", "KeypadDecimal", "KeypadDivide", "KeypadMultiply",
+    "KeypadSubtract", "KeypadAdd", "KeypadEnter", "KeypadEqual"
+    /*
+    "AppBack", "AppForward",
+    "GamepadStart", "GamepadBack",
+    "GamepadFaceLeft", "GamepadFaceRight", "GamepadFaceUp", "GamepadFaceDown",
+    "GamepadDpadLeft", "GamepadDpadRight", "GamepadDpadUp", "GamepadDpadDown",
+    "GamepadL1", "GamepadR1", "GamepadL2", "GamepadR2", "GamepadL3", "GamepadR3",
+    "GamepadLStickLeft", "GamepadLStickRight", "GamepadLStickUp", "GamepadLStickDown",
+    "GamepadRStickLeft", "GamepadRStickRight", "GamepadRStickUp", "GamepadRStickDown",
+    "MouseLeft", "MouseRight", "MouseMiddle", "MouseX1", "MouseX2", "MouseWheelX", "MouseWheelY",
+    "ModCtrl", "ModShift", "ModAlt", "ModSuper", // ReservedForModXXX are showing the ModXXX names.
+    */
 };
 
 std::string Bof_ImGui::S_GetKeyboardState()
@@ -79,42 +81,42 @@ uint32_t Bof_ImGui::S_KeyToKeyCode(const std::string &_rKey_S)
   std::istringstream Iss(_rKey_S);
   std::vector<std::string> TokenCollection{std::istream_iterator<std::string>{Iss}, std::istream_iterator<std::string>{}};
 
-  auto &rLeftIt = std::find(TokenCollection.begin(), TokenCollection.end(), "LeftAlt");
-  if (rLeftIt != TokenCollection.end())
+  auto LeftIt = std::find(TokenCollection.begin(), TokenCollection.end(), "LeftAlt");
+  if (LeftIt != TokenCollection.end())
   {
-    TokenCollection.erase(rLeftIt);
+    TokenCollection.erase(LeftIt);
     Rts_U32 |= BOF_IMGUI_MOD_ALT_FLAG;
   }
-  auto &rRightIt = std::find(TokenCollection.begin(), TokenCollection.end(), "RightAlt");
-  if (rRightIt != TokenCollection.end())
+  auto RightIt = std::find(TokenCollection.begin(), TokenCollection.end(), "RightAlt");
+  if (RightIt != TokenCollection.end())
   {
-    TokenCollection.erase(rRightIt);
+    TokenCollection.erase(RightIt);
     Rts_U32 |= BOF_IMGUI_MOD_ALT_FLAG;
   }
 
-  rLeftIt = std::find(TokenCollection.begin(), TokenCollection.end(), "LeftCtrl");
-  if (rLeftIt != TokenCollection.end())
+  LeftIt = std::find(TokenCollection.begin(), TokenCollection.end(), "LeftCtrl");
+  if (LeftIt != TokenCollection.end())
   {
-    TokenCollection.erase(rLeftIt);
+    TokenCollection.erase(LeftIt);
     Rts_U32 |= BOF_IMGUI_MOD_CTRL_FLAG;
   }
-  rRightIt = std::find(TokenCollection.begin(), TokenCollection.end(), "RightCtrl");
-  if (rRightIt != TokenCollection.end())
+  RightIt = std::find(TokenCollection.begin(), TokenCollection.end(), "RightCtrl");
+  if (RightIt != TokenCollection.end())
   {
-    TokenCollection.erase(rRightIt);
+    TokenCollection.erase(RightIt);
     Rts_U32 |= BOF_IMGUI_MOD_CTRL_FLAG;
   }
 
-  rLeftIt = std::find(TokenCollection.begin(), TokenCollection.end(), "LeftShift");
-  if (rLeftIt != TokenCollection.end())
+  LeftIt = std::find(TokenCollection.begin(), TokenCollection.end(), "LeftShift");
+  if (LeftIt != TokenCollection.end())
   {
-    TokenCollection.erase(rLeftIt);
+    TokenCollection.erase(LeftIt);
     Rts_U32 |= BOF_IMGUI_MOD_SHIFT_FLAG;
   }
-  rRightIt = std::find(TokenCollection.begin(), TokenCollection.end(), "RightShift");
-  if (rRightIt != TokenCollection.end())
+  RightIt = std::find(TokenCollection.begin(), TokenCollection.end(), "RightShift");
+  if (RightIt != TokenCollection.end())
   {
-    TokenCollection.erase(rRightIt);
+    TokenCollection.erase(RightIt);
     Rts_U32 |= BOF_IMGUI_MOD_SHIFT_FLAG;
   }
 
@@ -159,7 +161,7 @@ std::string Bof_ImGui::S_KeyToString(const BOF::BOF_IMGUI_KEY &_rKey_X)
   Rts_S += _rKey_X.Key_S;
   return Rts_S;
 }
-bool Bof_ImGui::S_HexaColor(const std::string &_rHexaColor_S, uint8_t (&_rColor_U8)[4])
+bool Bof_ImGui::S_HexaColor(const std::string &_rHexaColor_S, uint8_t(&_rColor_U8)[4])
 {
   bool Rts_B = false;
   uint32_t Rgba_U32;
@@ -834,7 +836,7 @@ void Bof_ImGui::V_ShowGui()
     for (auto &rIt : mKeyActionCallbackCollection)
     {
       if (rIt.second.KeyActionCallback)
-      { 
+      {
         KeyWithoutMod_U32 = rIt.first & (0xFFFFFFFF ^ BOF_IMGUI_MOD_MASK);
         if (ScanCodeMode_B)
         {
@@ -923,227 +925,227 @@ bool Bof_ImGui::V_AnyBackendEventCallback(void *_pEvent)
         DBG_LOG("SDL_TEXTEDITING_EXT event\n", 0);
         break;
         */
-      /*
-      case SDL_QUIT:
-        DBG_LOG("SDL_QUIT event\n", 0);
-        break;
-      case SDL_APP_TERMINATING:
-        DBG_LOG("SDL_APP_TERMINATING event\n", 0);
-        break;
-      case SDL_APP_LOWMEMORY:
-        DBG_LOG("SDL_APP_LOWMEMORY event\n", 0);
-        break;
-      case SDL_APP_WILLENTERBACKGROUND:
-        DBG_LOG("SDL_APP_WILLENTERBACKGROUND event\n", 0);
-        break;
-      case SDL_APP_DIDENTERBACKGROUND:
-        DBG_LOG("SDL_APP_DIDENTERBACKGROUND event\n", 0);
-        break;
-      case SDL_APP_WILLENTERFOREGROUND:
-        DBG_LOG("SDL_APP_WILLENTERFOREGROUND event\n", 0);
-        break;
-      case SDL_APP_DIDENTERFOREGROUND:
-        DBG_LOG("SDL_APP_DIDENTERFOREGROUND event\n", 0);
-        break;
-      case SDL_LOCALECHANGED:
-        DBG_LOG("SDL_LOCALECHANGED event\n", 0);
-        break;
-      case SDL_DISPLAYEVENT:
-        DBG_LOG("SDL_DISPLAYEVENT event\n", 0);
-        break;
-      case SDL_WINDOWEVENT:
-        switch (pEvent_X->window.event)
-        {
-          // Add cases for SDL_WINDOWEVENT events
-          case SDL_WINDOWEVENT_SHOWN:
-            DBG_LOG("SDL_WINDOWEVENT_SHOWN event\n", 0);
-            break;
-          case SDL_WINDOWEVENT_HIDDEN:
-            DBG_LOG("SDL_WINDOWEVENT_HIDDEN event\n", 0);
-            break;
-          case SDL_WINDOWEVENT_EXPOSED:
-            DBG_LOG("SDL_WINDOWEVENT_EXPOSED event\n", 0);
-            break;
-          // Add more cases for other SDL_WINDOWEVENT events
-          default:
-            DBG_LOG("Unhandled SDL_WindowEvent type: %d\n", pEvent_X->window.event);
-            break;
-        }
-        break;
-      case SDL_SYSWMEVENT:
-        DBG_LOG("SDL_SYSWMEVENT event\n", 0);
-        break;
+        /*
+        case SDL_QUIT:
+          DBG_LOG("SDL_QUIT event\n", 0);
+          break;
+        case SDL_APP_TERMINATING:
+          DBG_LOG("SDL_APP_TERMINATING event\n", 0);
+          break;
+        case SDL_APP_LOWMEMORY:
+          DBG_LOG("SDL_APP_LOWMEMORY event\n", 0);
+          break;
+        case SDL_APP_WILLENTERBACKGROUND:
+          DBG_LOG("SDL_APP_WILLENTERBACKGROUND event\n", 0);
+          break;
+        case SDL_APP_DIDENTERBACKGROUND:
+          DBG_LOG("SDL_APP_DIDENTERBACKGROUND event\n", 0);
+          break;
+        case SDL_APP_WILLENTERFOREGROUND:
+          DBG_LOG("SDL_APP_WILLENTERFOREGROUND event\n", 0);
+          break;
+        case SDL_APP_DIDENTERFOREGROUND:
+          DBG_LOG("SDL_APP_DIDENTERFOREGROUND event\n", 0);
+          break;
+        case SDL_LOCALECHANGED:
+          DBG_LOG("SDL_LOCALECHANGED event\n", 0);
+          break;
+        case SDL_DISPLAYEVENT:
+          DBG_LOG("SDL_DISPLAYEVENT event\n", 0);
+          break;
+        case SDL_WINDOWEVENT:
+          switch (pEvent_X->window.event)
+          {
+            // Add cases for SDL_WINDOWEVENT events
+            case SDL_WINDOWEVENT_SHOWN:
+              DBG_LOG("SDL_WINDOWEVENT_SHOWN event\n", 0);
+              break;
+            case SDL_WINDOWEVENT_HIDDEN:
+              DBG_LOG("SDL_WINDOWEVENT_HIDDEN event\n", 0);
+              break;
+            case SDL_WINDOWEVENT_EXPOSED:
+              DBG_LOG("SDL_WINDOWEVENT_EXPOSED event\n", 0);
+              break;
+            // Add more cases for other SDL_WINDOWEVENT events
+            default:
+              DBG_LOG("Unhandled SDL_WindowEvent type: %d\n", pEvent_X->window.event);
+              break;
+          }
+          break;
+        case SDL_SYSWMEVENT:
+          DBG_LOG("SDL_SYSWMEVENT event\n", 0);
+          break;
 
 
-      // Add cases for other SDL extended text editing events
-      case SDL_MOUSEMOTION:
-        DBG_LOG("SDL_MOUSEMOTION event\n", 0);
-        break;
-      // Add cases for other SDL mouse events
-      case SDL_MOUSEBUTTONDOWN:
-        DBG_LOG("SDL_MOUSEBUTTONDOWN event\n", 0);
-        break;
-      // Add cases for other SDL mouse button down events
-      case SDL_MOUSEBUTTONUP:
-        DBG_LOG("SDL_MOUSEBUTTONUP event\n", 0);
-        break;
-      // Add cases for other SDL mouse button up events
-      case SDL_MOUSEWHEEL:
-        DBG_LOG("SDL_MOUSEWHEEL event\n", 0);
-        break;
-      // Add cases for other SDL mouse wheel events
-      case SDL_JOYAXISMOTION:
-        DBG_LOG("SDL_JOYAXISMOTION event\n", 0);
-        break;
-      // Add cases for other SDL joystick events
-      case SDL_JOYBALLMOTION:
-        DBG_LOG("SDL_JOYBALLMOTION event\n", 0);
-        break;
-      // Add cases for other SDL joystick ball motion events
-      case SDL_JOYHATMOTION:
-        DBG_LOG("SDL_JOYHATMOTION event\n", 0);
-        break;
-      // Add cases for other SDL joystick hat motion events
-      case SDL_JOYBUTTONDOWN:
-        DBG_LOG("SDL_JOYBUTTONDOWN event\n", 0);
-        break;
-      // Add cases for other SDL joystick button down events
-      case SDL_JOYBUTTONUP:
-        DBG_LOG("SDL_JOYBUTTONUP event\n", 0);
-        break;
-      // Add cases for other SDL joystick button up events
-      case SDL_JOYDEVICEADDED:
-        DBG_LOG("SDL_JOYDEVICEADDED event\n", 0);
-        break;
-      // Add cases for other SDL joystick device added events
-      case SDL_JOYDEVICEREMOVED:
-        DBG_LOG("SDL_JOYDEVICEREMOVED event\n", 0);
-        break;
-      // Add cases for other SDL joystick device removed events
-      case SDL_JOYBATTERYUPDATED:
-        DBG_LOG("SDL_JOYBATTERYUPDATED event\n", 0);
-        break;
-      // Add cases for other SDL joystick battery updated events
-      case SDL_CONTROLLERAXISMOTION:
-        DBG_LOG("SDL_CONTROLLERAXISMOTION event\n", 0);
-        break;
-      // Add cases for other SDL game controller events
-      case SDL_CONTROLLERBUTTONDOWN:
-        DBG_LOG("SDL_CONTROLLERBUTTONDOWN event\n", 0);
-        break;
-      // Add cases for other SDL game controller button down events
-      case SDL_CONTROLLERBUTTONUP:
-        DBG_LOG("SDL_CONTROLLERBUTTONUP event\n", 0);
-        break;
-      // Add cases for other SDL game controller button up events
-      case SDL_CONTROLLERDEVICEADDED:
-        DBG_LOG("SDL_CONTROLLERDEVICEADDED event\n", 0);
-        break;
-      // Add cases for other SDL game controller device added events
-      case SDL_CONTROLLERDEVICEREMOVED:
-        DBG_LOG("SDL_CONTROLLERDEVICEREMOVED event\n", 0);
-        break;
-      // Add cases for other SDL game controller device removed events
-      case SDL_CONTROLLERDEVICEREMAPPED:
-        DBG_LOG("SDL_CONTROLLERDEVICEREMAPPED event\n", 0);
-        break;
-      // Add cases for other SDL game controller device remapped events
-      case SDL_CONTROLLERTOUCHPADDOWN:
-        DBG_LOG("SDL_CONTROLLERTOUCHPADDOWN event\n", 0);
-        break;
-      // Add cases for other SDL game controller touchpad down events
-      case SDL_CONTROLLERTOUCHPADMOTION:
-        DBG_LOG("SDL_CONTROLLERTOUCHPADMOTION event\n", 0);
-        break;
-      // Add cases for other SDL game controller touchpad motion events
-      case SDL_CONTROLLERTOUCHPADUP:
-        DBG_LOG("SDL_CONTROLLERTOUCHPADUP event\n", 0);
-        break;
-      // Add cases for other SDL game controller touchpad up events
-      case SDL_CONTROLLERSENSORUPDATE:
-        DBG_LOG("SDL_CONTROLLERSENSORUPDATE event\n", 0);
-        break;
-      // Add cases for other SDL game controller sensor update events
-      case SDL_FINGERDOWN:
-        DBG_LOG("SDL_FINGERDOWN event\n", 0);
-        break;
-      // Add cases for other SDL touch events
-      case SDL_FINGERUP:
-        DBG_LOG("SDL_FINGERUP event\n", 0);
-        break;
-      // Add cases for other SDL finger up events
-      case SDL_FINGERMOTION:
-        DBG_LOG("SDL_FINGERMOTION event\n", 0);
-        break;
-      // Add cases for other SDL finger motion events
-      case SDL_DOLLARGESTURE:
-        DBG_LOG("SDL_DOLLARGESTURE event\n", 0);
-        break;
-      // Add cases for other SDL dollar gesture events
-      case SDL_DOLLARRECORD:
-        DBG_LOG("SDL_DOLLARRECORD event\n", 0);
-        break;
-      // Add cases for other SDL dollar record events
-      case SDL_MULTIGESTURE:
-        DBG_LOG("SDL_MULTIGESTURE event\n", 0);
-        break;
-      // Add cases for other SDL multi-gesture events
-      case SDL_CLIPBOARDUPDATE:
-        DBG_LOG("SDL_CLIPBOARDUPDATE event\n", 0);
-        break;
-      // Add cases for other SDL clipboard update events
-      case SDL_DROPFILE:
-        DBG_LOG("SDL_DROPFILE event\n", 0);
-        break;
-      // Add cases for other SDL drop file events
-      case SDL_DROPTEXT:
-        DBG_LOG("SDL_DROPTEXT event\n", 0);
-        break;
-      // Add cases for other SDL drop text events
-      case SDL_DROPBEGIN:
-        DBG_LOG("SDL_DROPBEGIN event\n", 0);
-        break;
-      // Add cases for other SDL drop begin events
-      case SDL_DROPCOMPLETE:
-        DBG_LOG("SDL_DROPCOMPLETE event\n", 0);
-        break;
-      // Add cases for other SDL drop complete events
-      case SDL_AUDIODEVICEADDED:
-        DBG_LOG("SDL_AUDIODEVICEADDED event\n", 0);
-        break;
-      // Add cases for other SDL audio device added events
-      case SDL_AUDIODEVICEREMOVED:
-        DBG_LOG("SDL_AUDIODEVICEREMOVED event\n", 0);
-        break;
-      // Add cases for other SDL audio device removed events
-      case SDL_SENSORUPDATE:
-        DBG_LOG("SDL_SENSORUPDATE event\n", 0);
-        break;
-      // Add cases for other SDL sensor events
-      case SDL_RENDER_TARGETS_RESET:
-        DBG_LOG("SDL_RENDER_TARGETS_RESET event\n", 0);
-        break;
-      // Add cases for other SDL render targets reset events
-      case SDL_RENDER_DEVICE_RESET:
-        DBG_LOG("SDL_RENDER_DEVICE_RESET event\n", 0);
-        break;
-      // Add cases for other SDL render device reset events
-      case SDL_POLLSENTINEL:
-        DBG_LOG("SDL_POLLSENTINEL event\n", 0);
-        break;
-      // Add cases for other SDL poll sentinel events
-      case SDL_USEREVENT:
-        DBG_LOG("SDL_USEREVENT event\n", 0);
-        break;
-      // Add cases for other SDL user events
-      case SDL_LASTEVENT:
-        DBG_LOG("SDL_LASTEVENT event\n", 0);
-        break;
-      // Add cases for other SDL last events
-      default:
-        DBG_LOG("Unhandled SDL_Event type: %d\n", pEvent_X->type);
-        break;
-*/
+        // Add cases for other SDL extended text editing events
+        case SDL_MOUSEMOTION:
+          DBG_LOG("SDL_MOUSEMOTION event\n", 0);
+          break;
+        // Add cases for other SDL mouse events
+        case SDL_MOUSEBUTTONDOWN:
+          DBG_LOG("SDL_MOUSEBUTTONDOWN event\n", 0);
+          break;
+        // Add cases for other SDL mouse button down events
+        case SDL_MOUSEBUTTONUP:
+          DBG_LOG("SDL_MOUSEBUTTONUP event\n", 0);
+          break;
+        // Add cases for other SDL mouse button up events
+        case SDL_MOUSEWHEEL:
+          DBG_LOG("SDL_MOUSEWHEEL event\n", 0);
+          break;
+        // Add cases for other SDL mouse wheel events
+        case SDL_JOYAXISMOTION:
+          DBG_LOG("SDL_JOYAXISMOTION event\n", 0);
+          break;
+        // Add cases for other SDL joystick events
+        case SDL_JOYBALLMOTION:
+          DBG_LOG("SDL_JOYBALLMOTION event\n", 0);
+          break;
+        // Add cases for other SDL joystick ball motion events
+        case SDL_JOYHATMOTION:
+          DBG_LOG("SDL_JOYHATMOTION event\n", 0);
+          break;
+        // Add cases for other SDL joystick hat motion events
+        case SDL_JOYBUTTONDOWN:
+          DBG_LOG("SDL_JOYBUTTONDOWN event\n", 0);
+          break;
+        // Add cases for other SDL joystick button down events
+        case SDL_JOYBUTTONUP:
+          DBG_LOG("SDL_JOYBUTTONUP event\n", 0);
+          break;
+        // Add cases for other SDL joystick button up events
+        case SDL_JOYDEVICEADDED:
+          DBG_LOG("SDL_JOYDEVICEADDED event\n", 0);
+          break;
+        // Add cases for other SDL joystick device added events
+        case SDL_JOYDEVICEREMOVED:
+          DBG_LOG("SDL_JOYDEVICEREMOVED event\n", 0);
+          break;
+        // Add cases for other SDL joystick device removed events
+        case SDL_JOYBATTERYUPDATED:
+          DBG_LOG("SDL_JOYBATTERYUPDATED event\n", 0);
+          break;
+        // Add cases for other SDL joystick battery updated events
+        case SDL_CONTROLLERAXISMOTION:
+          DBG_LOG("SDL_CONTROLLERAXISMOTION event\n", 0);
+          break;
+        // Add cases for other SDL game controller events
+        case SDL_CONTROLLERBUTTONDOWN:
+          DBG_LOG("SDL_CONTROLLERBUTTONDOWN event\n", 0);
+          break;
+        // Add cases for other SDL game controller button down events
+        case SDL_CONTROLLERBUTTONUP:
+          DBG_LOG("SDL_CONTROLLERBUTTONUP event\n", 0);
+          break;
+        // Add cases for other SDL game controller button up events
+        case SDL_CONTROLLERDEVICEADDED:
+          DBG_LOG("SDL_CONTROLLERDEVICEADDED event\n", 0);
+          break;
+        // Add cases for other SDL game controller device added events
+        case SDL_CONTROLLERDEVICEREMOVED:
+          DBG_LOG("SDL_CONTROLLERDEVICEREMOVED event\n", 0);
+          break;
+        // Add cases for other SDL game controller device removed events
+        case SDL_CONTROLLERDEVICEREMAPPED:
+          DBG_LOG("SDL_CONTROLLERDEVICEREMAPPED event\n", 0);
+          break;
+        // Add cases for other SDL game controller device remapped events
+        case SDL_CONTROLLERTOUCHPADDOWN:
+          DBG_LOG("SDL_CONTROLLERTOUCHPADDOWN event\n", 0);
+          break;
+        // Add cases for other SDL game controller touchpad down events
+        case SDL_CONTROLLERTOUCHPADMOTION:
+          DBG_LOG("SDL_CONTROLLERTOUCHPADMOTION event\n", 0);
+          break;
+        // Add cases for other SDL game controller touchpad motion events
+        case SDL_CONTROLLERTOUCHPADUP:
+          DBG_LOG("SDL_CONTROLLERTOUCHPADUP event\n", 0);
+          break;
+        // Add cases for other SDL game controller touchpad up events
+        case SDL_CONTROLLERSENSORUPDATE:
+          DBG_LOG("SDL_CONTROLLERSENSORUPDATE event\n", 0);
+          break;
+        // Add cases for other SDL game controller sensor update events
+        case SDL_FINGERDOWN:
+          DBG_LOG("SDL_FINGERDOWN event\n", 0);
+          break;
+        // Add cases for other SDL touch events
+        case SDL_FINGERUP:
+          DBG_LOG("SDL_FINGERUP event\n", 0);
+          break;
+        // Add cases for other SDL finger up events
+        case SDL_FINGERMOTION:
+          DBG_LOG("SDL_FINGERMOTION event\n", 0);
+          break;
+        // Add cases for other SDL finger motion events
+        case SDL_DOLLARGESTURE:
+          DBG_LOG("SDL_DOLLARGESTURE event\n", 0);
+          break;
+        // Add cases for other SDL dollar gesture events
+        case SDL_DOLLARRECORD:
+          DBG_LOG("SDL_DOLLARRECORD event\n", 0);
+          break;
+        // Add cases for other SDL dollar record events
+        case SDL_MULTIGESTURE:
+          DBG_LOG("SDL_MULTIGESTURE event\n", 0);
+          break;
+        // Add cases for other SDL multi-gesture events
+        case SDL_CLIPBOARDUPDATE:
+          DBG_LOG("SDL_CLIPBOARDUPDATE event\n", 0);
+          break;
+        // Add cases for other SDL clipboard update events
+        case SDL_DROPFILE:
+          DBG_LOG("SDL_DROPFILE event\n", 0);
+          break;
+        // Add cases for other SDL drop file events
+        case SDL_DROPTEXT:
+          DBG_LOG("SDL_DROPTEXT event\n", 0);
+          break;
+        // Add cases for other SDL drop text events
+        case SDL_DROPBEGIN:
+          DBG_LOG("SDL_DROPBEGIN event\n", 0);
+          break;
+        // Add cases for other SDL drop begin events
+        case SDL_DROPCOMPLETE:
+          DBG_LOG("SDL_DROPCOMPLETE event\n", 0);
+          break;
+        // Add cases for other SDL drop complete events
+        case SDL_AUDIODEVICEADDED:
+          DBG_LOG("SDL_AUDIODEVICEADDED event\n", 0);
+          break;
+        // Add cases for other SDL audio device added events
+        case SDL_AUDIODEVICEREMOVED:
+          DBG_LOG("SDL_AUDIODEVICEREMOVED event\n", 0);
+          break;
+        // Add cases for other SDL audio device removed events
+        case SDL_SENSORUPDATE:
+          DBG_LOG("SDL_SENSORUPDATE event\n", 0);
+          break;
+        // Add cases for other SDL sensor events
+        case SDL_RENDER_TARGETS_RESET:
+          DBG_LOG("SDL_RENDER_TARGETS_RESET event\n", 0);
+          break;
+        // Add cases for other SDL render targets reset events
+        case SDL_RENDER_DEVICE_RESET:
+          DBG_LOG("SDL_RENDER_DEVICE_RESET event\n", 0);
+          break;
+        // Add cases for other SDL render device reset events
+        case SDL_POLLSENTINEL:
+          DBG_LOG("SDL_POLLSENTINEL event\n", 0);
+          break;
+        // Add cases for other SDL poll sentinel events
+        case SDL_USEREVENT:
+          DBG_LOG("SDL_USEREVENT event\n", 0);
+          break;
+        // Add cases for other SDL user events
+        case SDL_LASTEVENT:
+          DBG_LOG("SDL_LASTEVENT event\n", 0);
+          break;
+        // Add cases for other SDL last events
+        default:
+          DBG_LOG("Unhandled SDL_Event type: %d\n", pEvent_X->type);
+          break;
+  */
     }
   }
   else
@@ -1243,7 +1245,7 @@ BOFERR Bof_ImGui::ShowDemoSpecialTextWindow()
 
   // Demo the colorful text. In practice, we can generate the index for a pattern or text with a grep like tool.
   const static char *pText2_c = "Hello, Dear ImGui Text Customization. It works with Text Highlight, Text Underline, Text Strikethrough, Text Wrap, Text Disabling and Text Mask. "
-                                "And it shold work across one or more \r\n\r\nempty lines as well. You are free to apply one or more customization for any text inside the string.\r\n";
+    "And it shold work across one or more \r\n\r\nempty lines as well. You are free to apply one or more customization for any text inside the string.\r\n";
 
   struct _Config
   {

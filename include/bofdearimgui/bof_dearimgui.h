@@ -387,7 +387,7 @@ public:
 
   static std::string S_GetKeyboardState();
   static uint32_t S_KeyToKeyCode(const std::string &_rKey_S);
-  static std::string Bof_ImGui::S_KeyToString(const BOF::BOF_IMGUI_KEY &_rKey_X);
+  static std::string S_KeyToString(const BOF::BOF_IMGUI_KEY &_rKey_X);
   static bool S_HexaColor(const std::string &_rHexaColor_S, uint8_t(&_rColor_U8)[4]); // #RRGGBB or #RRGGBBAA
   static void S_BuildHelpMarker(const char *_pHelp_c);
 
