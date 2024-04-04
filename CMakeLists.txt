@@ -71,7 +71,7 @@ include(cmake/dearimgui.cmake)
 
 target_compile_definitions(${PROJECT_NAME_LOWER_MINUS}
   PRIVATE
-    -D${PROJECT_NAME_LOWER}_EXPORTS=1	#in lower case to define the SYMBOL BOFDEARIMGUI_EXPORT (upper case) in bofdearimgui_export.h
+    -D${PROJECT_NAME_UPPER_UNDERSCORE}_EXPORTS=1	#in lower case to define the symbol BOFDEARIMGUI_EXPORT (upper case) in bofdearimgui_export.h
 )
 
 if (EMSCRIPTEN)
