@@ -94,7 +94,6 @@ target_include_directories(${PROJECT_NAME_LOWER_MINUS}
 target_link_libraries(${PROJECT_NAME_LOWER_MINUS}
   PRIVATE
     ONBINGS::bofstd
-    implot::implot
 )
 
 if(${PROJECT_NAME_UPPER_UNDERSCORE}_BUILD_TESTS)
