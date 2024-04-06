@@ -94,6 +94,7 @@ target_include_directories(${PROJECT_NAME_LOWER_MINUS}
 target_link_libraries(${PROJECT_NAME_LOWER_MINUS}
   PRIVATE
     ONBINGS::bofstd
+    implot::implot
 )
 
 if(${PROJECT_NAME_UPPER_UNDERSCORE}_BUILD_TESTS)
@@ -108,7 +109,6 @@ endif()
 if (PROJECT_IS_TOP_LEVEL)
 	message("==========================Start fetch for ${PROJECT_NAME}=========================")
 	fetch_external_library_add(googletest "${LIST_OF_LIB}" https://github.com/google/googletest release-1.12.1)
-	fetch_external_library_add(implot "${LIST_OF_LIB}" https://github.com/epezent/implot.git master)
 	make_external_library_available("${LIST_OF_LIB}")
 	message("==========================End fetch for ${PROJECT_NAME}===========================")
 	set_target_properties(gtest PROPERTIES MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
