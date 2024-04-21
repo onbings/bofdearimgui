@@ -520,7 +520,7 @@ BOFERR Bof_ImGui::MainLoop()
     mRunnerParam_X.fpsIdling.enableIdling = true;
     mRunnerParam_X.dpiAwareParams.dpiWindowSizeFactor = 0.0f;
     mRunnerParam_X.dpiAwareParams.fontRenderingScale = 0.0f;
-    //mRunnerParam_X.dpiAwareParams.dpiWindowSizeFactor. = 0.5f;
+    //mRunnerParam_X.dpiAwareParams.dpiWindowSizeFactor = 2.0f;
     mRunnerParam_X.emscripten_fps = 0;
     mRunnerParam_X.useImGuiTestEngine = false;
 

@@ -51,19 +51,46 @@ set(${PROJECT_NAME_UPPER_UNDERSCORE}_EMSCRIPTEN_WASM_EXCEPTION OFF)  #hello-imgu
 set(DATA_FILES
 #  ./assets/font/cour.ttf
 )
-
-# == BUILD ==
-add_library(${PROJECT_NAME_LOWER_MINUS}
-   ./src/bof_dearimgui.cpp
+set(IMGUI_FILES
+  ./src/bof_dearimgui.cpp
    ./include/bofdearimgui/bof_dearimgui.h
    ./src/bof_dearimgui_internal.cpp
    ./include/bofdearimgui/bof_dearimgui_internal.h
-
+)
+set(IMGUI_IMNODE_FILES
    ./include/bofdearimgui/bof_dearimgui_imnodes.h 
    ./include/bofdearimgui/bof_dearimgui_imnodes_internal.h 
-
    ./src/bof_dearimgui_imnodes.cpp
 )
+set(IMGUI_TOGGLE_FILES
+	./include/bofdearimgui/imgui_toggle/imgui_toggle_math.h
+	./include/bofdearimgui/imgui_toggle/imgui_offset_rect.h
+	./include/bofdearimgui/imgui_toggle/imgui_toggle.h
+	./src/imgui_toggle/imgui_toggle.cpp
+	./include/bofdearimgui/imgui_toggle/imgui_toggle_palette.h
+	./src/imgui_toggle/imgui_toggle_palette.cpp
+	./include/bofdearimgui/imgui_toggle/imgui_toggle_presets.h
+	./src/imgui_toggle/imgui_toggle_presets.cpp
+	./include/bofdearimgui/imgui_toggle/imgui_toggle_renderer.h
+	./src/imgui_toggle/imgui_toggle_renderer.cpp
+)
+set(IMGUI_KNOB_FILES
+	./include/bofdearimgui/imgui-knobs/imgui-knobs.h
+	./src/imgui-knobs/imgui-knobs.cpp
+)
+# == BUILD ==
+add_library(${PROJECT_NAME_LOWER_MINUS}
+   ${IMGUI_FILES}
+   ${IMGUI_IMNODE_FILES}
+   ${IMGUI_TOGGLE_FILES}
+   ${IMGUI_KNOB_FILES}
+)
+
+source_group("ImGui"		 FILES ${IMGUI_FILES})
+source_group("ImNode"		 FILES ${IMGUI_IMNODE_FILES})
+source_group("ImToggle"		 FILES ${IMGUI_TOGGLE_FILES})
+source_group("ImKnob"		 FILES ${IMGUI_KNOB_FILES})
+
 # Alias with the namespaced version (consistency)
 add_library(ONBINGS::${PROJECT_NAME_LOWER_MINUS} ALIAS ${PROJECT_NAME_LOWER_MINUS})
 
@@ -88,6 +115,8 @@ target_include_directories(${PROJECT_NAME_LOWER_MINUS}
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/hello_imgui/src> #hello_imgui
 
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> 
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/bofdearimgui/imgui_toggle> 
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/bofdearimgui/imgui-knobs> 
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>       #for flat model (.h and .cpp in source dir)
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>		#for bofdearimgui_export.h install (below) 
 )
