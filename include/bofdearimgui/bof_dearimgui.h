@@ -66,6 +66,7 @@ struct BOF_IMGUI_PARAM
   bool ShowDemoWindow_B;
   bool ShowMenuBar_B;
   bool ShowStatusBar_B;
+  bool DisableIdling_B;
   Logger TheLogger;
 
   BOF_IMGUI_PARAM()
@@ -85,6 +86,7 @@ struct BOF_IMGUI_PARAM
     ShowDemoWindow_B = false;
     ShowMenuBar_B = false;
     ShowStatusBar_B = false;
+    DisableIdling_B = false;
     TheLogger = nullptr;
   }
 };

@@ -517,7 +517,7 @@ BOFERR Bof_ImGui::MainLoop()
     mRunnerParam_X.iniFilename = ""; // relative to iniFolderType
     mRunnerParam_X.iniFilename_useAppWindowTitle = true;
     mRunnerParam_X.appShallExit = false;
-    mRunnerParam_X.fpsIdling.enableIdling = true;
+    mRunnerParam_X.fpsIdling.enableIdling = !mImguiParam_X.DisableIdling_B;
     mRunnerParam_X.dpiAwareParams.dpiWindowSizeFactor = 0.0f;
     mRunnerParam_X.dpiAwareParams.fontRenderingScale = 0.0f;
     //mRunnerParam_X.dpiAwareParams.dpiWindowSizeFactor = 2.0f;
