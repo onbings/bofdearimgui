@@ -48,9 +48,6 @@ set(${PROJECT_NAME_UPPER_UNDERSCORE}_EMSCRIPTEN_WASM_EXCEPTION OFF)  #hello-imgu
 #got by git clone https://github.com/pthom/hello_imgui.git
 #add_subdirectory(hello_imgui)
 
-set(DATA_FILES
-#  ./assets/font/cour.ttf
-)
 set(IMGUI_FILES
   ./src/bof_dearimgui.cpp
    ./include/bofdearimgui/bof_dearimgui.h
