@@ -9,6 +9,8 @@
 # History:		1 Jan 2024: BHA: Initial version 
 # 
 
+#git clone git@github.com:onbings/bofdearimgui.git
+
 #Emscripten build
 #cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_INSTALL_PREFIX=C:/bld/evs-hwfw-xts-web/binaries -DVCPKG_CHAINLOAD_TOOLCHAIN_FILE=C:/pro/emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake -DCMAKE_TOOLCHAIN_FILE=C:/pro/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=wasm32-emscripten -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Debug -SC:/pro/evs-hwfw-xts/bofdearimgui -BC:/bld/bofdearimgui-web -DCMAKE_CROSSCOMPILING_EMULATOR=C:/pro/emsdk/node/16.20.0_64bit/bin/node.exe -G Ninja
 #cd C:\pro\evs-hwfw-xts\bofdearimgui\vcprj
@@ -21,8 +23,9 @@
 #cmake -DCMAKE_INSTALL_PREFIX=C:/bld/evs-hwfw-xts-win/binaries -DCMAKE_TOOLCHAIN_FILE=C:/pro/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-windows-static -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Debug -SC:/pro/evs-hwfw-xts/bofdearimgui -BC:/bld/bofdearimgui-win
 
 #Linux build
-#cmake -DCMAKE_INSTALL_PREFIX=/home/bha/bld/evs-hwfw-xts-lin/binaries -DCMAKE_TOOLCHAIN_FILE=/home/bha/pro/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-linux -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Debug -S/home/bha/pro/evs-hwfw-xts/bofdearimgui -B/home/bha/bld/bofdearimgui-lin
+#cmake -DCMAKE_INSTALL_PREFIX=/home/bha/bld/xts/binaries -DCMAKE_TOOLCHAIN_FILE=/home/bha/pro/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-linux -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Debug -S/home/bha/pro/bofdearimgui -B/home/bha/bld/bofdearimgui-lin
 
+#cmake --build . -- -j 40
 #cmake --install . --config Debug
 
 cmake_minimum_required(VERSION 3.28)
@@ -134,12 +137,12 @@ endif()
 # they must be built with a strict control of options which is not possible with vcpkg 
 # build in manifest mode 
 if (PROJECT_IS_TOP_LEVEL)
-	message("==========================Start fetch for ${PROJECT_NAME}=========================")
-	fetch_external_component_add(googletest "${LIST_OF_COMPONENT}" https://github.com/google/googletest release-1.12.1)
-	make_external_library_available("${LIST_OF_COMPONENT}")
-	message("==========================End fetch for ${PROJECT_NAME}===========================")
-	set_target_properties(gtest PROPERTIES MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
-	set_target_properties(gtest_main PROPERTIES MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+	#message("==========================Start fetch for ${PROJECT_NAME}=========================")
+	#fetch_external_component_add(googletest "${LIST_OF_COMPONENT}" https://github.com/google/googletest release-1.12.1)
+	#make_external_component_available("${LIST_OF_COMPONENT}")
+	#message("==========================End fetch for ${PROJECT_NAME}===========================")
+	#set_target_properties(gtest PROPERTIES MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+	#set_target_properties(gtest_main PROPERTIES MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 endif()
 include(cmake/export_version.cmake)
 include(cmake/install.cmake)

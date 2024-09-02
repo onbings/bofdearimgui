@@ -187,7 +187,14 @@ install(FILES
   DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME_LOWER_MINUS}
   COMPONENT   ${PROJECT_NAME_LOWER_MINUS}-devel
 )
-
+#save generate_export_header .h file
+#message("==========ins=========>.._export.h=${PROJECT_BINARY_DIR}/${PROJECT_NAME_LOWER_UNDERSCORE}_export.h")
+#message("==========ins=========> install=${CMAKE_INSTALL_INCLUDEDIR}")
+install(FILES
+   ${PROJECT_BINARY_DIR}/${PROJECT_NAME_LOWER_UNDERSCORE}_export.h 
+   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+   COMPONENT   ${PROJECT_NAME_LOWER_MINUS}-devel   
+)
 option(INSTALL_GTEST  "Disable installation of gtest" OFF)
 if (PROJECT_IS_TOP_LEVEL)
 	execute_process(
