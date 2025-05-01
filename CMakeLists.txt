@@ -20,10 +20,10 @@
 #Select VcRun::WebNode::ut_bofdearimgui in debug icon
 
 #Windows build
-#cmake -DCMAKE_INSTALL_PREFIX=C:/bld/evs-hwfw-xts-win/binaries -DCMAKE_TOOLCHAIN_FILE=C:/pro/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-windows-static -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Debug -SC:/pro/evs-hwfw-xts/bofdearimgui -BC:/bld/bofdearimgui-win
+#cmake -DCMAKE_INSTALL_PREFIX=C:/bld/github-win/binaries -DCMAKE_TOOLCHAIN_FILE=C:/pro/vcpkg/scripts/buildsystems/vcpkg.cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Debug -SC:/pro/github/bofdearimgui -BC:/bld/bofdearimgui-win
 
 #Linux build
-#cmake -DCMAKE_INSTALL_PREFIX=/home/bha/bld/xts/binaries -DCMAKE_TOOLCHAIN_FILE=/home/bha/pro/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-linux -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Debug  -DRHEL:STRING="el9" -S/home/bha/pro/bofdearimgui -B/home/bha/bld/bofdearimgui-lin
+#cmake -DCMAKE_INSTALL_PREFIX=/home/bha/bld/github-win/binaries -DCMAKE_TOOLCHAIN_FILE=/home/bha/pro/vcpkg/scripts/buildsystems/vcpkg.cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Debug  -DRHEL:STRING="el9" -S/home/bha/pro/github/bofdearimgui -B/home/bha/bld/bofdearimgui-lin
 
 #cmake --build . -- -j 40
 #cmake --install . --config Debug
@@ -39,7 +39,7 @@ include(cmake/fixup_vs_crt.cmake)
 include(cmake/vcpkg_install.cmake)
 include(cmake/fetch_content.cmake)
 
-project(bofdearimgui VERSION 1.0.0.0)
+project(bofdearimgui VERSION 2.2.1.5)
 include(cmake/compile.cmake)
 include(Dependencies.cmake)
 
@@ -123,6 +123,8 @@ target_include_directories(${PROJECT_NAME_LOWER_MINUS}
 target_link_libraries(${PROJECT_NAME_LOWER_MINUS}
   PRIVATE
     ONBINGS::bofstd
+    $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
+    $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>	
   PUBLIC
     implot::implot
 )

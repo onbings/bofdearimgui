@@ -43,7 +43,7 @@ static inline const char *S_CalcWordWrapNextLineStartA(const char *text, const c
   return text;
 }
 // Note: as with every ImDrawList drawing function, this expects that the font atlas texture is bound.
-void ImFontRenderText(const ImFont *pFont, ImDrawList *draw_list, float size, ImVec2 pos, ImU32 col, const ImVec4 &clip_rect, const char *text_begin, const char *text_end, float wrap_width, bool cpu_fine_clip, const Bof_ImGui_ImTextCustomization *customization)
+void ImFontRenderText( ImFont *pFont, ImDrawList *draw_list, float size, ImVec2 pos, ImU32 col, const ImVec4 &clip_rect, const char *text_begin, const char *text_end, float wrap_width, bool cpu_fine_clip, const Bof_ImGui_ImTextCustomization *customization)
 {
   if (!text_end)
   {
@@ -157,7 +157,7 @@ void ImFontRenderText(const ImFont *pFont, ImDrawList *draw_list, float size, Im
     float size;
 
     // font, readonly during the liftime of this struct
-    const ImFont *font;
+    ImFont *font;
 
     // the text lien height, readonly during the liftime of this struct
     float line_height;
@@ -218,7 +218,7 @@ void ImFontRenderText(const ImFont *pFont, ImDrawList *draw_list, float size, Im
     Segments mask_segments;
 
     // CTOR
-    _CustomizationParser(ImU32 text_col, float size, const char *text_begin, const char *text_end, const ImFont *font, const Bof_ImGui_ImTextCustomization *custom_style)
+    _CustomizationParser(ImU32 text_col, float size, const char *text_begin, const char *text_end, ImFont *font, const Bof_ImGui_ImTextCustomization *custom_style)
         : text_col(text_col), size(size), text_begin(text_begin), text_end(text_end), font(font), custom_style(custom_style)
     {
       line_height = size;
@@ -657,7 +657,7 @@ void ImFontRenderText(const ImFont *pFont, ImDrawList *draw_list, float size, Im
   }
 }
 
-void ImDrawListAddText(const ImFont *font, float font_size, const ImVec2 &pos, ImU32 col, const char *text_begin, const char *text_end, float wrap_width, const ImVec4 *cpu_fine_clip_rect, const Bof_ImGui_ImTextCustomization *customization)
+void ImDrawListAddText(ImFont *font, float font_size, const ImVec2 &pos, ImU32 col, const char *text_begin, const char *text_end, float wrap_width, const ImVec4 *cpu_fine_clip_rect, const Bof_ImGui_ImTextCustomization *customization)
 {
   ImGuiContext &g = *GImGui;
   if ((col & IM_COL32_A_MASK) == 0)

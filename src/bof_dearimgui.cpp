@@ -16,7 +16,7 @@
 #include "bofdearimgui/bof_dearimgui.h"
 #include "bofdearimgui/bof_dearimgui_internal.h"
 #include <bofstd/bofstring.h>
-#include <imgui_impl_sdl2.h>
+//#include <imgui_impl_sdl2.h>
 #include <iterator>
 
 #if defined(_WIN32)
@@ -648,11 +648,12 @@ std::vector<BOF_IMGUI_FONT> Bof_ImGui::GetFontList()
   for (i_U32 = 0; i_U32 < pFontAtlas_X->Fonts.Size; ++i_U32)
   {
     pFont_X = pFontAtlas_X->Fonts[i_U32];
-    Font_X.Name_S = pFont_X->ConfigData ? pFont_X->ConfigData[0].Name : "Unknown";
+ //   Font_X.Name_S = pFont_X->ConfigData ? pFont_X->ConfigData[0].Name : "Unknown";
+    Font_X.Name_S = pFont_X->Sources ? pFont_X->Sources[0].Name : "Unknown";
     Font_X.Size_U32 = pFont_X->FontSize;
     Rts.push_back(Font_X);
     // Print information about each font
-    DBG_LOG("Font %d: Name - %s, Size - %.2f\n", i_U32, pFont_X->ConfigData ? pFont_X->ConfigData[0].Name : "Unknown", pFont_X->FontSize);
+    DBG_LOG("Font %d: Name - %s, Size - %.2f\n", i_U32, Font_X.Name_S.c_str(), pFont_X->FontSize);
   }
   return Rts;
 }
