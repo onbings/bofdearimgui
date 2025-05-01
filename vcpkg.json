@@ -13,6 +13,9 @@
 		"sdl2-binding"
       ]
     },
+    {
+      "name": "imgui"
+    },
 	{
       "name": "sdl2"
     },
