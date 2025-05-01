@@ -126,6 +126,7 @@ target_link_libraries(${PROJECT_NAME_LOWER_MINUS}
     $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
     $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>	
   PUBLIC
+	hello-imgui::hello_imgui
     implot::implot
 )
 

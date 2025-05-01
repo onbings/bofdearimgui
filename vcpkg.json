@@ -7,14 +7,13 @@
       "name": "bofstd"
     },
     {
-      "name": "hello-imgui",
-      "features": [
-        "opengl3-binding",
-		"sdl2-binding"
-      ]
+      "name": "hello-imgui"
     },
     {
-      "name": "imgui"
+      "name": "imgui",
+      "features": [
+        "opengl3-binding"
+      ]	  
     },
 	{
       "name": "sdl2"
