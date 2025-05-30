@@ -21,6 +21,7 @@
     {
       "name": "sdl2",
       "default-features": false,
+	  "platform": "!windows",
       "features": [
         "alsa"
       ]
