@@ -81,39 +81,39 @@ uint32_t Bof_ImGui::S_KeyToKeyCode(const std::string &_rKey_S)
   std::istringstream Iss(_rKey_S);
   std::vector<std::string> TokenCollection{std::istream_iterator<std::string>{Iss}, std::istream_iterator<std::string>{}};
 
-  auto LeftIt = std::find(TokenCollection.begin(), TokenCollection.end(), "LeftAlt");
+  auto LeftIt = std::find(TokenCollection.begin(), TokenCollection.end(), std::string("LeftAlt"));
   if (LeftIt != TokenCollection.end())
   {
     TokenCollection.erase(LeftIt);
     Rts_U32 |= BOF_IMGUI_MOD_ALT_FLAG;
   }
-  auto RightIt = std::find(TokenCollection.begin(), TokenCollection.end(), "RightAlt");
+  auto RightIt = std::find(TokenCollection.begin(), TokenCollection.end(), std::string("RightAlt"));
   if (RightIt != TokenCollection.end())
   {
     TokenCollection.erase(RightIt);
     Rts_U32 |= BOF_IMGUI_MOD_ALT_FLAG;
   }
 
-  LeftIt = std::find(TokenCollection.begin(), TokenCollection.end(), "LeftCtrl");
+  LeftIt = std::find(TokenCollection.begin(), TokenCollection.end(), std::string("LeftCtrl"));
   if (LeftIt != TokenCollection.end())
   {
     TokenCollection.erase(LeftIt);
     Rts_U32 |= BOF_IMGUI_MOD_CTRL_FLAG;
   }
-  RightIt = std::find(TokenCollection.begin(), TokenCollection.end(), "RightCtrl");
+  RightIt = std::find(TokenCollection.begin(), TokenCollection.end(), std::string("RightCtrl"));
   if (RightIt != TokenCollection.end())
   {
     TokenCollection.erase(RightIt);
     Rts_U32 |= BOF_IMGUI_MOD_CTRL_FLAG;
   }
 
-  LeftIt = std::find(TokenCollection.begin(), TokenCollection.end(), "LeftShift");
+  LeftIt = std::find(TokenCollection.begin(), TokenCollection.end(), std::string("LeftShift"));
   if (LeftIt != TokenCollection.end())
   {
     TokenCollection.erase(LeftIt);
     Rts_U32 |= BOF_IMGUI_MOD_SHIFT_FLAG;
   }
-  RightIt = std::find(TokenCollection.begin(), TokenCollection.end(), "RightShift");
+  RightIt = std::find(TokenCollection.begin(), TokenCollection.end(), std::string("RightShift"));
   if (RightIt != TokenCollection.end())
   {
     TokenCollection.erase(RightIt);
