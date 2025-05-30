@@ -1,13 +1,13 @@
 {
   "default-registry": {
     "kind": "git",
-    "baseline": "8f63c9ed5897d7367a92a442a79f91721e0fd38f",
+    "baseline": "a9eee3b18df395dbb8be71a31bd78ea441056e42",
     "repository": "https://github.com/microsoft/vcpkg.git"
   },
   "registries": [
     {
       "kind": "git",
-      "baseline": "2dacda05d10de88891c75aae201e528439b88024",
+      "baseline": "9d2bdc38e874748058eaa0bac9b97a93d696a770",
       "repository": "https://github.com/onbings/onbings-vcpkg-registry.git",
       "packages": [
         "bofstd"
