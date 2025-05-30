@@ -22,7 +22,7 @@ endif()
 
 # Disable compiler extension to maximize portability
 set(CMAKE_CXX_EXTENSIONS        OFF)
-set(CMAKE_CXX_STANDARD          17)
+set(CMAKE_CXX_STANDARD          20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON) 
 SET(CMAKE_COLOR_MAKEFILE ON)
 SET(CMAKE_VERBOSE_MAKEFILE ON)

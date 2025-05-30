@@ -39,7 +39,7 @@ include(cmake/fixup_vs_crt.cmake)
 include(cmake/vcpkg_install.cmake)
 include(cmake/fetch_content.cmake)
 
-project(bofdearimgui VERSION 2.2.1.6)
+project(bofdearimgui VERSION 2.2.1.8)
 include(cmake/compile.cmake)
 include(Dependencies.cmake)
 
