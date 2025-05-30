@@ -17,7 +17,7 @@
 #include "bofdearimgui/bof_dearimgui_internal.h"
 #include <bofstd/bofstring.h>
 //#include <imgui_impl_sdl2.h>
-#include <iterator>
+#include <algorithm>
 
 #if defined(_WIN32)
 #include <ShellScalingApi.h>
