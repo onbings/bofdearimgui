@@ -18,6 +18,7 @@
 #include <bofstd/bofstring.h>
 //#include <imgui_impl_sdl2.h>
 #include <algorithm>
+#include <iterator>
 
 #if defined(_WIN32)
 #include <ShellScalingApi.h>
