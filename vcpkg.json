@@ -1,6 +1,6 @@
 {
   "name": "bofdearimgui",
-  "version": "2.2.1.8",
+  "version": "2.2.1.9",
   "description": "The OnBings DearImGui c++ wrapper library",
   "dependencies": [
     {
@@ -19,14 +19,15 @@
       ]
     },
     {
-      "name": "sdl2",
+      "name": "sdl2-core",
       "default-features": false
     },
     {
-      "name": "sdl2",
+      "name": "sdl2-core",
       "default-features": false,
       "features": [
-        "alsa"
+        "alsa",
+		"x11"
       ],
       "platform": "!windows"
     },
