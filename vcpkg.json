@@ -27,7 +27,7 @@
       "default-features": false,
       "features": [
         "alsa",
-		"x11"
+        "x11"
       ],
       "platform": "!windows"
     },
